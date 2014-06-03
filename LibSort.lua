@@ -94,8 +94,6 @@ function LibSort:ProcessOrderFunction(data, tiebreaker, itemA, itemB)
 	if response == 0 and self.TiebreakerChain[data.key] then		
 		return self:ProcessOrderFunction(tiebreaker, self.TiebreakerChain[tiebreaker.key], itemA, itemB)
 	else
-		glog:debug(data.name .. " checking ".. data.name .. " for " .. itemA:GetName() .. " vs " .. itemB:GetName())
-		glog:debug("Returning " .. response )
 		return response
 	end
 end
@@ -129,4 +127,4 @@ function LibSort:RegisterDefaultOrder(addonName, keyTableLow, keyTableHigh)
 	self:ReOrderKeys()
 end
 
-Apollo.RegisterPackage(LibSort, MAJOR, MINOR, {})
+Apollo.RegisterPackage(LibSort, MAJOR, MINORddd, {})

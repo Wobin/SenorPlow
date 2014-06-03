@@ -364,7 +364,6 @@ function MrPlow:HookExtraButton(args)
 		return
 	end
 	if inventory.nSortItemType then
-		glog:debug("setting saved")		
 		self.wndMain:SetCheck(inventory.bShouldSortItems and inventory.nSortItemType == 4)
 	end
 	Rover:AddWatch("MrPlow", self)
@@ -379,8 +378,6 @@ function MrPlow:FamilySort(itemLeft, itemRight)
 	if FAMILYDUPES[bFam] then bFam = FAMILYDUPES[bFam] end
 
 	if aFam == bFam then return 0 end
-	glog:debug("Fam ".. aFam .. ":" .. bFam)
-	glog:debug("Fam ".. FAMILYORDER[aFam] .. ":" .. FAMILYORDER[bFam])
 	if (FAMILYORDER[aFam] or 0) > (FAMILYORDER[bFam] or 0) then return -1 end
 	if (FAMILYORDER[aFam] or 0) < (FAMILYORDER[bFam] or 0) then return 1 end
 end
@@ -402,8 +399,6 @@ function MrPlow:CategorySort(itemLeft, itemRight)
 	if CATEGORYDUPES[bCat] then bCat = CATEGORYDUPES[bCat] end
 
 	if aCat == bCat then return 0 end
-	glog:debug("cat" .. aCat .. ":" .. bCat)
-	glog:debug("cat" .. CATEGORYORDER[aCat] .. ":" .. CATEGORYORDER[bCat])
 	if (CATEGORYORDER[aCat] or 0) > (CATEGORYORDER[bCat] or 0) then return -1 end
 	if (CATEGORYORDER[aCat] or 0) < (CATEGORYORDER[bCat] or 0) then return 1 end
 end
@@ -444,7 +439,7 @@ function MrPlow:OnOptionsSortItemsByAll( wndHandler, wndControl, eMouseButton )
 	inventory.bShouldSortItems = true
 	inventory.nSortItemType = 4
 	inventory.wndMainBagWindow:SetSort(true)
-	inventory.wndMainBagWindow:SetItemSortComparer(function(...) LibSort:Comparer(...) end)
+	inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
 	inventory.wndIconBtnSortDropDown:SetCheck(false)
 end
 
