@@ -129,4 +129,4 @@ function LibSort:RegisterDefaultOrder(addonName, keyTableLow, keyTableHigh)
 	self:ReOrderKeys()
 end
 
-Apollo.RegisterPackage(LibSort, "Wob:LibSort-1.0", 1, {})
+Apollo.RegisterPackage(LibSort, MAJOR, MINOR, {})

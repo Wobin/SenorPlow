@@ -50,19 +50,20 @@ local FAMILYORDER = {
 	[FAMILY.COSTUME] = 				3,
 	[FAMILY.GEAR] = 				4,
 	[FAMILY.PATH] = 				5,
-	[FAMILY.REAGENT] = 				6,
-	[FAMILY.RUNES] = 				7,
-	[FAMILY.SCHEMATIC] = 			8,
-	[FAMILY.CONSUMABLE] = 			9,
-	[FAMILY.QUEST_ITEM] = 			10,
-	[FAMILY.TOOL] = 				11,
-	[FAMILY.WARPLOT] = 				12,
-	[FAMILY.HOUSING] = 				13,
-	[FAMILY.BAG] =  				14,
-	[FAMILY.UNUSUAL_COMPONENT] = 	15,
-	[FAMILY.CHARGED_ITEM] = 		16,
-	[FAMILY.BROKEN_ITEM] = 			17,
-	[FAMILY.MISCELLANEOUS] = 		18
+	[FAMILY.CRAFTING] = 			6,
+	[FAMILY.REAGENT] = 				7,
+	[FAMILY.RUNES] = 				8,
+	[FAMILY.SCHEMATIC] = 			9,
+	[FAMILY.CONSUMABLE] = 			10,
+	[FAMILY.QUEST_ITEM] = 			11,
+	[FAMILY.TOOL] = 				12,
+	[FAMILY.WARPLOT] = 				13,
+	[FAMILY.HOUSING] = 				14,
+	[FAMILY.BAG] =  				15,
+	[FAMILY.UNUSUAL_COMPONENT] = 	16,
+	[FAMILY.CHARGED_ITEM] = 		17,
+	[FAMILY.BROKEN_ITEM] = 			18,
+	[FAMILY.MISCELLANEOUS] = 		19
 }
 
 local CATEGORY = {
@@ -313,8 +314,11 @@ function MrPlow:OnLoad()
 
 	-- Check if Inventory is loaded
 	inventory = Apollo.GetAddon("Inventory")
-
+	
+	self.xmlDoc = XmlDoc.CreateFromFile("SeñorPlow.xml")
+		
 	glog:debug("Loading")
+	
 	if not inventory.wndMain then -- Look out for the event that it has
 		glog:debug("No Inventory")
 		Apollo.RegisterEventHandler("WindowManagementAdd", "HookExtraButton", self)
@@ -322,56 +326,47 @@ function MrPlow:OnLoad()
 		glog:debug("We have inventory")
 		self:HookExtraButton()
 	end
-end
 
-
------------------------------------------------------------------------------------------------
--- MrPlow OnDocLoaded
------------------------------------------------------------------------------------------------
-function MrPlow:OnDocLoaded()
-
-	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
-	
-		-- Extend our dropdown
-		local prompt = inventory.wndMain:FindChild("ItemSortPrompt")
-		prompt:SetAnchorOffsets(-26, 9, 26, 205)
-		
-		-- Make the existing bottom button a middle button
-		inventory.wndMain:FindChild("IconBtnSortQuality"):ChangeArt("BK3:btnHolo_ListView_Mid")
-
-		-- Create our additional button and hook it in
-		self.wndMain = Apollo.LoadForm(self.xmlDoc, "IconBtnSortAll", prompt , self)
-		
-		if self.wndMain == nil then
-			Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
-			return
-		end
-		if inventory.nSortItemType then
-			glog:debug("setting saved")		
-			self.wndMain:SetCheck(inventory.bShouldSortItems and inventory.nSortItemType == 4)
-		end
-		
-
-	    self.xmlDoc = nil
-		
+	glog:debug("Loaded xml")
+		-- Extend our dropdown		
 		LibSort:Register("MrPlow", "Family", "Sort by Item Family", "family", function(...) return MrPlow:FamilySort(...) end)
 		LibSort:Register("MrPlow", "Slot", "Sort by Item Slot", "slot", function(...) return MrPlow:SlotSort(...) end)
 		LibSort:Register("MrPlow", "Category", "Sort by Item Category", "category", function(...) return MrPlow:CategorySort(...) end)
 		LibSort:Register("MrPlow", "Level", "Sort by Required Level", "level", function(...) return MrPlow:LevelSort(...) end)
 		LibSort:Register("MrPlow", "Name", "Sort by Name", "level", function(...) return MrPlow:NameSort(...) end)
 
-		self.LibSort = LibSort
-	end
+		self.LibSort = LibSort	
 end
+
+
+-----------------------------------------------------------------------------------------------
+-- MrPlow OnDocLoaded
+-----------------------------------------------------------------------------------------------
+
 
 function MrPlow:HookExtraButton(args)
 	if args and args.strName ~= Apollo.GetString("InterfaceMenu_Inventory") then return end
-	self.xmlDoc = XmlDoc.CreateFromFile("SeñorPlow.xml")
+	
 	inventoryMain = inventory.wndMain or args.wnd
-	self.xmlDoc:RegisterCallback("OnDocLoaded", self)
 	glog:debug( "Hooking button")
 	self.inventory = inventory
+	local prompt = inventory.wndMain:FindChild("ItemSortPrompt")
+	prompt:SetAnchorOffsets(-26, 9, 26, 205)
 	
+	-- Make the existing bottom button a middle button
+	inventory.wndMain:FindChild("IconBtnSortQuality"):ChangeArt("BK3:btnHolo_ListView_Mid")
+
+	-- Create our additional button and hook it in
+	self.wndMain = Apollo.LoadForm(self.xmlDoc, "IconBtnSortAll", prompt , self)
+	
+	if self.wndMain == nil then
+		Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
+		return
+	end
+	if inventory.nSortItemType then
+		glog:debug("setting saved")		
+		self.wndMain:SetCheck(inventory.bShouldSortItems and inventory.nSortItemType == 4)
+	end
 	Rover:AddWatch("MrPlow", self)
 end
 
