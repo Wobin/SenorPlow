@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Addon Author="Wobin" APIVersion="8" Name="MrPlow" Description="Extending the sorting functionality of the inventory">
+    <Script Name="inspect.lua"/>
+	<Script Name="GeminiLogging.lua"/>
+	<Script Name="LibSort.lua"/>
+    <Script Name="SeñorPlow.lua"/>
+    <Form Name="SeñorPlow.xml"/>
+</Addon>
