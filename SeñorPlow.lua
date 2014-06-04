@@ -363,8 +363,10 @@ function MrPlow:HookExtraButton(args)
 		Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
 		return
 	end
-	if inventory.nSortItemType then
-		self.wndMain:SetCheck(inventory.bShouldSortItems and inventory.nSortItemType == 4)
+	if inventory.nSortItemType == 4 then
+		self.wndMain:SetCheck(inventory.bShouldSortItems)
+		inventory.wndMainBagWindow:SetSort(true)
+		inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
 	end
 	Rover:AddWatch("MrPlow", self)
 end
@@ -378,8 +380,8 @@ function MrPlow:FamilySort(itemLeft, itemRight)
 	if FAMILYDUPES[bFam] then bFam = FAMILYDUPES[bFam] end
 
 	if aFam == bFam then return 0 end
-	if (FAMILYORDER[aFam] or 0) > (FAMILYORDER[bFam] or 0) then return -1 end
-	if (FAMILYORDER[aFam] or 0) < (FAMILYORDER[bFam] or 0) then return 1 end
+	if (FAMILYORDER[aFam] or 0) < (FAMILYORDER[bFam] or 0) then return -1 end
+	if (FAMILYORDER[aFam] or 0) > (FAMILYORDER[bFam] or 0) then return 1 end
 end
 
 function MrPlow:SlotSort(itemLeft, itemRight)	
@@ -387,8 +389,8 @@ function MrPlow:SlotSort(itemLeft, itemRight)
 	local bSlot = itemRight:GetSlot()
 
 	if aSlot == bSlot then return 0 end
-	if (SLOTORDER[aSlot] or 0) > (SLOTORDER[bSlot] or 0) then return -1 end
-	if (SLOTORDER[aSlot] or 0) < (SLOTORDER[bSlot] or 0) then return 1 end
+	if (SLOTORDER[aSlot] or 0) < (SLOTORDER[bSlot] or 0) then return -1 end
+	if (SLOTORDER[aSlot] or 0) > (SLOTORDER[bSlot] or 0) then return 1 end
 end
 
 function MrPlow:CategorySort(itemLeft, itemRight)	
@@ -408,17 +410,17 @@ function MrPlow:LevelSort(itemLeft, itemRight)
 	local bLvl = itemRight:GetRequiredLevel()
 
 	if aLvl == bLvl then return 0 end
-	if aLvl < bLvl then return -1 end
-	if aLvl > bLvl then return 1 end
+	if aLvl > bLvl then return -1 end
+	if aLvl < bLvl then return 1 end
 end
 
 function MrPlow:NameSort(itemLeft, itemRight)
 	local strLeftName = itemLeft:GetName()
 	local strRightName = itemRight:GetName()
-	if strLeftName < strRightName then
+	if strLeftName > strRightName then
 		return 1
 	end
-	if strLeftName > strRightName then
+	if strLeftName < strRightName then
 		return -1
 	end
 	
