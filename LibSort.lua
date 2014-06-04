@@ -37,7 +37,9 @@ LibSort.DefaultOrdersHigh = {}
 LibSort.TiebreakerChain = {}
 
 function LibSort:Comparer(itemA, itemB)
-	return self:ProcessOrderFunction(self.FirstInChain, self.TiebreakerChain[self.FirstInChain.key], itemA, itemB)
+	if self.FirstInChain then
+		return self:ProcessOrderFunction(self.FirstInChain, self.TiebreakerChain[self.FirstInChain.key], itemA, itemB)
+	end
 end
 
 function LibSort:ReOrderKeys()

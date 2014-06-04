@@ -311,7 +311,6 @@ function MrPlow:OnLoad()
 		self:HookExtraButton()
 	end
 
-	glog:debug("Loaded xml")
 		-- Extend our dropdown		
 		LibSort:Register("MrPlow", "Family", "Sort by Item Family", "family", function(...) return MrPlow:FamilySort(...) end)
 		LibSort:Register("MrPlow", "Slot", "Sort by Item Slot", "slot", function(...) return MrPlow:SlotSort(...) end)
@@ -347,7 +346,7 @@ function MrPlow:HookExtraButton(args)
 		Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
 		return
 	end
-	if inventory.nSortItemType == 4 then
+	if inventory.nSortItemType == 4 and inventory.bShouldSortItems then
 		self.wndMain:SetCheck(inventory.bShouldSortItems)
 		inventory.wndMainBagWindow:SetSort(true)
 		inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
