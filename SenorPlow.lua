@@ -1,15 +1,13 @@
 -----------------------------------------------------------------------------------------------
--- Client Lua Script for MrPlow
--- Copyright (c) NCsoft. All rights reserved
+-- Client Lua Script for SeñorPlow
+-- Copyright (c) Wobin. All rights reserved
 -----------------------------------------------------------------------------------------------
  
 require "Window"
 -----------------------------------------------------------------------------------------------
--- MrPlow Module Definition
+-- SeñorPlow Module Definition
 -----------------------------------------------------------------------------------------------
 local MrPlow = {} 
-local glog 
-local rover
 local LibSort
 local inventory
 -----------------------------------------------------------------------------------------------
@@ -284,13 +282,12 @@ function MrPlow:new(o)
 
     return o
 end
-MrPlowDebug = {}
 
 function MrPlow:Init()
 	local bHasConfigureFunction = false
 	local strConfigureButtonText = ""
 	local tDependencies = {
-		"Wob:LibSort-1.0", "Inventory", "Gemini:Logging-1.2", "Rover"
+		"Wob:LibSort-1.0", "Inventory"
 	}
     Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 
@@ -302,28 +299,15 @@ end
 function MrPlow:OnLoad()
     -- Set up our modules
 	LibSort = Apollo.GetPackage("Wob:LibSort-1.0").tPackage
-	
-	Rover = Apollo.GetAddon("Rover")
-
-	local GeminiLogging = Apollo.GetPackage("Gemini:Logging-1.2").tPackage
-	glog = GeminiLogging:GetLogger({
-        level = GeminiLogging.DEBUG,
-        pattern = "%d %n %c %l - %m",
-        appender = "GeminiConsole"
-  	})
 
 	-- Check if Inventory is loaded
 	inventory = Apollo.GetAddon("Inventory")
 	
-	self.xmlDoc = XmlDoc.CreateFromFile("SeñorPlow.xml")
+	self.xmlDoc = XmlDoc.CreateFromFile("SenorPlow.xml")
 		
-	glog:debug("Loading")
-	
-	if not inventory.wndMain then -- Look out for the event that it has
-		glog:debug("No Inventory")
+		if not inventory.wndMain then -- Look out for the event that it has
 		Apollo.RegisterEventHandler("WindowManagementAdd", "HookExtraButton", self)
 	else -- we're good to go
-		glog:debug("We have inventory")
 		self:HookExtraButton()
 	end
 
@@ -348,7 +332,7 @@ function MrPlow:HookExtraButton(args)
 	if args and args.strName ~= Apollo.GetString("InterfaceMenu_Inventory") then return end
 	
 	inventoryMain = inventory.wndMain or args.wnd
-	glog:debug( "Hooking button")
+	
 	self.inventory = inventory
 	local prompt = inventory.wndMain:FindChild("ItemSortPrompt")
 	prompt:SetAnchorOffsets(-26, 9, 26, 205)
@@ -367,8 +351,7 @@ function MrPlow:HookExtraButton(args)
 		self.wndMain:SetCheck(inventory.bShouldSortItems)
 		inventory.wndMainBagWindow:SetSort(true)
 		inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
-	end
-	Rover:AddWatch("MrPlow", self)
+	end	
 end
 
 
@@ -427,13 +410,6 @@ function MrPlow:NameSort(itemLeft, itemRight)
 	return 0
 end
 
-
------------------------------------------------------------------------------------------------
--- MrPlow Instance
------------------------------------------------------------------------------------------------
-local MrPlowInst = MrPlow:new()
-MrPlowInst:Init()
-
 ---------------------------------------------------------------------------------------------------
 -- IconBtnSortAll Functions
 ---------------------------------------------------------------------------------------------------
@@ -445,3 +421,8 @@ function MrPlow:OnOptionsSortItemsByAll( wndHandler, wndControl, eMouseButton )
 	inventory.wndIconBtnSortDropDown:SetCheck(false)
 end
 
+-----------------------------------------------------------------------------------------------
+-- MrPlow Instance
+-----------------------------------------------------------------------------------------------
+local SenorPlow = MrPlow:new()
+SenorPlow:Init()
