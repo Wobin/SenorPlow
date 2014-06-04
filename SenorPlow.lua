@@ -304,6 +304,7 @@ function MrPlow:OnLoad()
 	inventory = Apollo.GetAddon("Inventory")
 	
 	self.xmlDoc = XmlDoc.CreateFromFile("SenorPlow.xml")
+	self.xmlDoc2 = XmlDoc.CreateFromFile("NewForm.xml")
 		
 		if not inventory.wndMain then -- Look out for the event that it has
 		Apollo.RegisterEventHandler("WindowManagementAdd", "HookExtraButton", self)
@@ -341,6 +342,7 @@ function MrPlow:HookExtraButton(args)
 
 	-- Create our additional button and hook it in
 	self.wndMain = Apollo.LoadForm(self.xmlDoc, "IconBtnSortAll", prompt , self)
+	self.wndForm = Apollo.LoadForm(self.xmlDoc2, "MrPlowForm", nil , self)
 	
 	if self.wndMain == nil then
 		Apollo.AddAddonErrorText(self, "Could not load the main window for some reason.")
