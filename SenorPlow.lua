@@ -10,6 +10,7 @@ require "Window"
 local MrPlow = {} 
 local LibSort
 local inventory
+local GeminiGUI
 -----------------------------------------------------------------------------------------------
 -- Constants
 -----------------------------------------------------------------------------------------------
@@ -62,6 +63,27 @@ local FAMILYORDER = {
 	[FAMILY.CHARGED_ITEM] = 		17,
 	[FAMILY.BROKEN_ITEM] = 			18,
 	[FAMILY.MISCELLANEOUS] = 		19
+}
+local FamilyNames = {
+	[FAMILY.ARMOR] = 				"Armour",
+	[FAMILY.WEAPON] = 				"Weapon",
+	[FAMILY.COSTUME] = 				"Costume",
+	[FAMILY.GEAR] = 				"Gear",
+	[FAMILY.PATH] = 				"Path",
+	[FAMILY.CRAFTING] = 			"Crafting",
+	[FAMILY.REAGENT] = 				"Reagent",
+	[FAMILY.RUNES] = 				"Runes",
+	[FAMILY.SCHEMATIC] = 			"Schematic",
+	[FAMILY.CONSUMABLE] = 			"Consumable",
+	[FAMILY.QUEST_ITEM] = 			"Quest Item",
+	[FAMILY.TOOL] = 				"Tool",
+	[FAMILY.WARPLOT] = 				"WarPlot",
+	[FAMILY.HOUSING] = 				"Housing",
+	[FAMILY.BAG] =  				"Bag",
+	[FAMILY.UNUSUAL_COMPONENT] = 	"Unusual Component",
+	[FAMILY.CHARGED_ITEM] = 		"Charged Item",
+	[FAMILY.BROKEN_ITEM] = 			"Broken Item",
+	[FAMILY.MISCELLANEOUS] = 		"Misc"	
 }
 
 local CATEGORY = {
@@ -270,6 +292,64 @@ MrPlow.Lookups.CATEGORY = CATEGORY
 MrPlow.Lookups.CATEGORYORDER = CATEGORYORDER
 MrPlow.Lookups.SLOT = SLOT
 
+
+local tListFrameDef = {
+    AnchorOffsets = { 10, 9, 300, 80 },
+    RelativeToClient = true, 
+    BGColor = "UI_WindowBGDefault", 
+    TextColor = "UI_WindowTextDefault", 
+    Template = "HologramDialog", 
+    Name = "ListFrame", 
+    Border = true, 
+    Picture = true, 
+    SwallowMouseClicks = true, 
+    Moveable = true, 
+    Escapable = true, 
+    Overlapped = true, 
+    Children = {       
+    	{
+            AnchorOffsets = { -80, 0, 180, 15 },
+            RelativeToClient = true, 
+            BGColor = "UI_WindowBGDefault", 
+            TextColor = "UI_WindowTextDefault", 
+            VScroll = true,
+            NoClip = true,
+            Template = "Holo_List",
+            Name = "ListWindow", 
+        }, 
+        {
+            AnchorOffsets = { 11, 2, 233, 32 },
+            Class = "TextBox", 
+            RelativeToClient = true, 
+            BGColor = "UI_WindowBGDefault", 
+            TextColor = "UI_WindowTextDefault", 
+            Name = "TitleText", 
+        },
+    },
+}
+
+local tListButtonDef =  {
+    AnchorOffsets = { -2, 0, 250, 30 },
+    Class = "Button", 
+    Base = "", 
+    Font = "DefaultButton", 
+    ButtonType = "PushButton", 
+    DT_VCENTER = true, 
+    DT_CENTER = true, 
+    BGColor = "UI_BtnBGDefault", 
+    TextColor = "UI_BtnTextDefault", 
+    NormalTextColor = "UI_BtnTextDefault", 
+    PressedTextColor = "UI_BtnTextDefault", 
+    FlybyTextColor = "UI_BtnTextDefault", 
+    PressedFlybyTextColor = "UI_BtnTextDefault", 
+    DisabledTextColor = "UI_BtnTextDefault", 
+    Name = "Button", 
+    Template = "CRB_Normal", 
+    TextId = "FontAlias_Thick", 
+    Events = {
+        ButtonSignal = "YourFunctionName",
+    },
+}
 -----------------------------------------------------------------------------------------------
 -- Initialization
 -----------------------------------------------------------------------------------------------
@@ -299,7 +379,7 @@ end
 function MrPlow:OnLoad()
     -- Set up our modules
 	LibSort = Apollo.GetPackage("Wob:LibSort-1.0").tPackage
-
+	GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
 	-- Check if Inventory is loaded
 	inventory = Apollo.GetAddon("Inventory")
 	
@@ -323,6 +403,32 @@ function MrPlow:OnLoad()
 		LibSort:RegisterDefaultOrder("MrPlow", {"Family", "Slot", "Category"}, {"Level", "Name", "Id"})
 
 		self.LibSort = LibSort	
+
+		local tWindow = GeminiGUI:Create(tListFrameDef)
+		local tButton = GeminiGUI:Create(tListButtonDef)
+
+
+		wndInstance = tWindow:GetInstance()
+
+		local list = wndInstance:FindChild("ListWindow")
+
+		for family, rank in pairs(FAMILYORDER) do
+			tButton:SetData({rank = rank, family = family, name = FamilyNames[family]})
+			local but = tButton:GetInstance(nil, list)
+			but:SetText(FamilyNames[family])			
+		end
+
+		local extraHeight = (13 * 32) - 87
+		local offx1, offy1, offx2, offy2 = wndInstance:GetAnchorOffsets()
+		wndInstance:SetAnchorOffsets(offx1, offy1, offx2, offy2 + extraHeight + 40)
+		offx1, offy1, offx2, offy2 = list:GetAnchorOffsets()
+		list:SetAnchorOffsets(offx1, offy1, offx2, offy2 + extraHeight)
+		list:ArrangeChildrenVert(function(a,b) return a:GetData().rank < b:GetData().rank end)
+		self.List = wndInstance
+
+		wndInstance:Show(true)
+			
+
 end
 
 
@@ -441,5 +547,5 @@ end
 -----------------------------------------------------------------------------------------------
 -- MrPlow Instance
 -----------------------------------------------------------------------------------------------
-local SenorPlow = MrPlow:new()
+ SenorPlow = MrPlow:new()
 SenorPlow:Init()
