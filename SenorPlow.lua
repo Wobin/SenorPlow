@@ -318,6 +318,9 @@ function MrPlow:OnLoad()
 		LibSort:Register("MrPlow", "Category", "Sort by Item Category", "category", function(...) return MrPlow:CategorySort(...) end)
 		LibSort:Register("MrPlow", "Level", "Sort by Required Level", "level", function(...) return MrPlow:LevelSort(...) end)
 		LibSort:Register("MrPlow", "Name", "Sort by Name", "level", function(...) return MrPlow:NameSort(...) end)
+		LibSort:Register("MrPlow", "Id", "Sort by Inventory Id", "id", function(...) return MrPlow:IdSort(...) end)
+		
+		LibSort:RegisterDefaultOrder("MrPlow", {"Family", "Slot", "Category"}, {"Level", "Name", "Id"})
 
 		self.LibSort = LibSort	
 end
@@ -405,6 +408,21 @@ function MrPlow:NameSort(itemLeft, itemRight)
 		return 1
 	end
 	if strLeftName < strRightName then
+		return -1
+	end
+	
+	return 0
+end
+
+function MrPlow:IdSort(itemLeft, itemRight)
+	local strLeftId = itemLeft:GetInventoryId()
+	local strRightId = itemRight:GetInventoryId()
+	Print(strLeftId)
+	Print(strRightId)
+	if strLeftId > strRightId then
+		return 1
+	end
+	if strLeftId < strRightId then
 		return -1
 	end
 	
