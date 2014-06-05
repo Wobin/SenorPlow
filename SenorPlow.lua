@@ -417,8 +417,6 @@ end
 function MrPlow:IdSort(itemLeft, itemRight)
 	local strLeftId = itemLeft:GetInventoryId()
 	local strRightId = itemRight:GetInventoryId()
-	Print(strLeftId)
-	Print(strRightId)
 	if strLeftId > strRightId then
 		return 1
 	end
