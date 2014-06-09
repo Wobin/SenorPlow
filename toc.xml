@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Addon Author="Wobin" APIVersion="8" Name="SeñorPlow" Description="Extending the sorting functionality of the inventory">
 	<Script Name="Libs\LibSort-1.0\LibSort.lua"/>
+	<Script Name="Libs\GeminiAddon-1.0\GeminiAddon.lua"/>
 	<Script Name="Libs\GeminiGUI-1.0\GeminiGUI.lua"/>
+	<Script Name="Libs\GeminiHook-1.0\GeminiHook-1.0.lua"/>
+	<Script Name="Libs\GeminiLogging\inspect.lua"/>
+	<Script Name="Libs\GeminiLogging\GeminiLogging.lua"/>
     <Script Name="Constants.lua"/>
     <Script Name="Frames.lua"/>
     <Script Name="SenorPlow.lua"/>

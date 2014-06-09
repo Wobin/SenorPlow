@@ -1,13 +1,13 @@
 local MrPlow = MrPlow
 
-local FAMILY = MrPlow.Lookups.FAMILY 
-local FAMILYDUPES = MrPlow.Lookups.FAMILYDUPES
-local FAMILYORDER = MrPlow.Lookups.FAMILYORDER 
-local CATEGORY = MrPlow.Lookups.CATEGORY 
-local CATEGORYDUPES = MrPlow.Lookups.CATEGORYDUPES
-local CATEGORYORDER = MrPlow.Lookups.CATEGORYORDER 
-local SLOT = MrPlow.Lookups.SLOT
-local SLOTORDER = MrPlow.Lookups.SLOTORDER
+local FAMILY = MrPlow.Lookups.Family.Base 
+local FAMILYDUPES = MrPlow.Lookups.Family.Dupes
+local FAMILYORDER = MrPlow.Lookups.Family.Order 
+local CATEGORY = MrPlow.Lookups.Category.Base 
+local CATEGORYDUPES = MrPlow.Lookups.Category.Dupes
+local CATEGORYORDER = MrPlow.Lookups.Category.Order 
+local SLOT = MrPlow.Lookups.Slot.Base
+local SLOTORDER = MrPlow.Lookups.Slot.Order
 
 function MrPlow:FamilySort(itemLeft, itemRight)	
 	local aFam = itemLeft:GetItemFamily()
@@ -45,9 +45,7 @@ end
 function MrPlow:LevelSort(itemLeft, itemRight)
 	local aLvl = itemLeft:GetRequiredLevel()
 	local bLvl = itemRight:GetRequiredLevel()
-	if self:InjectCategoryCheck(itemLeft, itemRight) then
-		Print(itemLeft:GetName() .. "[" .. itemLeft:GetPowerLevel() .."] vs " .. itemRight:GetName() .. "[" .. itemRight:GetPowerLevel() .. "]")
-	end
+
 	if aLvl == bLvl then return 0 end
 	if aLvl > bLvl then return -1 end
 	if aLvl < bLvl then return 1 end
@@ -57,7 +55,7 @@ end
 function MrPlow:PowerLevelSort(itemLeft, itemRight)
 	local aLvl = itemLeft:GetPowerLevel()
 	local bLvl = itemRight:GetPowerLevel()
-	Print("arr")
+	
 	if aLvl == bLvl then return 0 end
 	if aLvl > bLvl then return -1 end
 	if aLvl < bLvl then return 1 end
@@ -87,13 +85,4 @@ function MrPlow:IdSort(itemLeft, itemRight)
 	end
 	
 	return 0
-end
-
-function MrPlow:InjectCategoryCheck(itemLeft, itemRight)
-	local aCat = itemLeft:GetItemCategory()
-	local bCat = itemRight:GetItemCategory()
-
-	if aCat == CATEGORY.FARMING and bCat == CATEGORY.FARMING then
-		return true		
-	end
 end

@@ -34,8 +34,8 @@ local FAMILYDUPES = {	[FAMILY.FABKIT] = FAMILY.HOUSING,
 
 
 local FAMILYORDER = {
-	[FAMILY.ARMOR] = 				1,
-	[FAMILY.WEAPON] = 				2,
+	[FAMILY.WEAPON] = 				1,
+	[FAMILY.ARMOR] = 				2,	
 	[FAMILY.COSTUME] = 				3,
 	[FAMILY.GEAR] = 				4,
 	[FAMILY.PATH] = 				5,
@@ -54,7 +54,7 @@ local FAMILYORDER = {
 	[FAMILY.BROKEN_ITEM] = 			18,
 	[FAMILY.MISCELLANEOUS] = 		19
 }
-local FamilyNames = {
+local FAMILYNAMES = {
 	[FAMILY.ARMOR] = 				"Armour",
 	[FAMILY.WEAPON] = 				"Weapon",
 	[FAMILY.COSTUME] = 				"Costume",
@@ -239,6 +239,75 @@ local CATEGORYORDER = {
 		[CATEGORY.STARTS_A_QUEST] =   			66,	
 }
 
+local CATEGORYNAMES =  {
+		[CATEGORY.AIR_RUNE] = 					"Air Rune",
+		[CATEGORY.EARTH_RUNE] = 				"Earth Rune",
+		[CATEGORY.FIRE_RUNE] =  				"Fire Rune",
+		[CATEGORY.FUSION_RUNE] =  				"Fusion Rune",
+		[CATEGORY.LIFE_RUNE] =  				"Life Rune",
+		[CATEGORY.LOGIC_RUNE] =  				"Logic Rune",
+		[CATEGORY.WATER_RUNE] =  				"Water Rune",
+		[CATEGORY.HEAVY_ARMOR] =  				"Heavy Armor",
+		[CATEGORY.MEDIUM_ARMOR] =  				"Medium Armor",
+		[CATEGORY.LIGHT_ARMOR] =   				"Light Armor",
+		[CATEGORY.COSTUME] =   					"Costume",
+		[CATEGORY.WEAPON_CLAWS] =   			"Weapon Claws",
+		[CATEGORY.WEAPON_GREATSWORD] = 			"Weapon Greatsword",
+		[CATEGORY.WEAPON_HEAVY_GUN] = 			"Weapon Heavy Gun",
+		[CATEGORY.WEAPON_PADDLES] = 			"Weapon Paddles",
+		[CATEGORY.WEAPON_PISTOLS] =   			"Weapon Pistols",
+		[CATEGORY.WEAPON_PSYBLADE] =   			"Weapon Psyblade",
+		[CATEGORY.WEAPON_RIFLE] =   			"Weapon Rifle",
+		[CATEGORY.WEAPON_STAFF] =   			"Weapon Staff",
+		[CATEGORY.WEAPON_ATTACHMENT] =   		"Weapon Attachment",
+		[CATEGORY.RELICS] =   					"Relics",
+		[CATEGORY.MINING] =   					"Mining",
+		[CATEGORY.SETTLER] =   					"Settler",
+		[CATEGORY.SURVIVALIST] =   				"Survivalist",
+		[CATEGORY.TECHNOLOGIST] =   			"Technologist",
+		[CATEGORY.FARMING] =   					"Farming",
+		[CATEGORY.CLOTH] =   					"Cloth",
+		[CATEGORY.CRAFTING_SUPPLIES] =   		"Crafting Supplies",
+		[CATEGORY.ELEMENTS] =   				"Elements",
+		[CATEGORY.MASTERCRAFT] =   				"Mastercraft",
+		[CATEGORY.RELIC_HUNTERTOOL] =   		"Relic Huntertool",
+		[CATEGORY.MINING_TOOL] =   				"Mining Tool",
+		[CATEGORY.SURVIVALIST_TOOL] =   		"Survivalist Tool",
+		[CATEGORY.ARCHITECT] =   				"Architect",
+		[CATEGORY.WARPLOT_IMPROVEMENT] = 		"Warplot Improvement",
+		[CATEGORY.WARPLOT_DEPLOYABLE_WEAPON] = 	"Warplot Deployable Weapon",
+		[CATEGORY.WARPLOT_DEPLOYABLE_TRAP] = 	"Warplot Deployable Trap",
+		[CATEGORY.SALVAGEABLE_ITEM] = 			"Salvageable Item",
+		[CATEGORY.SCHEMATIC] =   				"Schematic",
+		[CATEGORY.SKILL_AMP] =   				"Skill Amp",
+		[CATEGORY.LOOT_BAG] =   				"Loot Bag",
+		[CATEGORY.BAG] =   						"Bag",
+		[CATEGORY.DYES] =   					"Dyes",
+		[CATEGORY.SPECIAL_MEALS] =   			"Special Meals",
+		[CATEGORY.GENERAL_MEALS] = 	  			"General Meals",
+		[CATEGORY.CONSUMABLE] =   				"Consumable",
+		[CATEGORY.ELIXIR] =   					"Elixir",
+		[CATEGORY.MEDISHOTSBOOSTS] =   			"Medishotsboosts",
+		[CATEGORY.BANDAGE] =   					"Bandage",
+		[CATEGORY.QUEST_ITEM] =   				"Quest Item",
+		[CATEGORY.MOUNT] =   					"Mount",
+		[CATEGORY.PET] =   				  		"Pet",
+		[CATEGORY.ELDAN_QUEST] =   				"Eldan Quest",
+		[CATEGORY.PERMANENT_ENCHANT] =   		"Permanent Enchant",
+		[CATEGORY.PROPRIETARY_MATERIAL] =  		"Proprietary Material",
+		[CATEGORY.HOBBY] =   					"Hobby",
+		[CATEGORY.CHARGED_ITEM] =   			"Charged Item",
+		[CATEGORY.NOVELTY] =   					"Novelty",
+		[CATEGORY.BROKEN_ITEM] =   				"Broken Item",
+		[CATEGORY.FISHING_TOOL] =  				"Fishing Tool",
+		[CATEGORY.DISCOVERY_RELIC] =   			"Discovery Relic",
+		[CATEGORY.REAGENT] =   					"Reagent",
+		[CATEGORY.REAGENT_CRAFTING] =   		"Reagent Crafting",		
+		[CATEGORY.BOOK] =    					"Book",
+		[CATEGORY.JUNK] =   					"Junk",
+		[CATEGORY.STARTS_A_QUEST] =   			"Starts A Quest",	
+	}
+
 local SLOT = {
 		AUGMENT = 10,
 		CHEST = 0,
@@ -275,13 +344,25 @@ local SLOTORDER = {
 		[SLOT.BAG] 					=15,
 }
 
+local SLOTNAMES = {
+		[SLOT.PRIMARY_WEAPON] 		="Primary Weapon",
+		[SLOT.SHIELDS] 				="Shields",
+		[SLOT.HEAD] 				="Head",
+		[SLOT.SHOULDER] 			="Shoulder",
+		[SLOT.CHEST] 				="Chest",
+		[SLOT.HANDS] 				="Hands",
+		[SLOT.LEGS] 				="Legs",
+		[SLOT.FEET] 				="Feet",
+		[SLOT.TOOL] 				="Tool",
+		[SLOT.WEAPON_ATTACHMENT] 	="Weapon Attachment",
+		[SLOT.SUPPORT_SYSTEM] 		="Support System",
+		[SLOT.GADGET] 				="Gadget",
+		[SLOT.KEY] 					="Key",
+		[SLOT.AUGMENT] 				="Augment",
+		[SLOT.BAG] 					="Bag",
+}
 MrPlow.Lookups = {}
-MrPlow.Lookups.FAMILY = FAMILY
-MrPlow.Lookups.FAMILYDUPES = FAMILYDUPES
-MrPlow.Lookups.FAMILYORDER = FAMILYORDER
-MrPlow.Lookups.FamilyNames = FamilyNames
-MrPlow.Lookups.CATEGORY = CATEGORY
-MrPlow.Lookups.CATEGORYDUPES = CATEGORYDUPES
-MrPlow.Lookups.CATEGORYORDER = CATEGORYORDER
-MrPlow.Lookups.SLOT = SLOT
-MrPlow.Lookups.SLOTORDER = SLOTORDER
+MrPlow.Lookups.Family = {Title = "Family", Base = FAMILY, Dupes = FAMILYDUPES, Order = FAMILYORDER, Names = FAMILYNAMES}
+MrPlow.Lookups.Category = {Title = "Category", Base = CATEGORY, Dupes = CATEGORYDUPES, Order = CATEGORYORDER, Names = CATEGORYNAMES}
+MrPlow.Lookups.Slot = {Title = "Slots", Base = SLOT, Dupes = {}, Order = SLOTORDER, Names = SLOTNAMES}
+

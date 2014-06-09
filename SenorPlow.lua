@@ -4,49 +4,42 @@
 -----------------------------------------------------------------------------------------------
  
 require "Window"
------------------------------------------------------------------------------------------------
--- SeñorPlow Module Definition
------------------------------------------------------------------------------------------------
-local MrPlow = MrPlow
+
 local LibSort
 
 -----------------------------------------------------------------------------------------------
--- Initialization
+-- SeñorPlow Module Definition
 -----------------------------------------------------------------------------------------------
-function MrPlow:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self 
+local bHasConfigureFunction = false	
+local tDependencies = {
+		"Wob:LibSort-1.0", "Gemini:GUI-1.0"
+}	
 
-    -- initialize variables here
+local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon(MrPlow, "MrPlow", bHasConfigureFunction, tDependencies, "Gemini:Hook-1.0")
 
-    return o
-end
 
-function MrPlow:Init()
-	local bHasConfigureFunction = false
-	local strConfigureButtonText = ""
-	local tDependencies = {
-		"Wob:LibSort-1.0", "Inventory", "BankViewer"
-	}
-    Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
-
-end
- 
 -----------------------------------------------------------------------------------------------
--- MrPlow OnLoad
+-- MrPlow OnInitialize
 -----------------------------------------------------------------------------------------------
-function MrPlow:OnLoad()
+function MrPlow:OnInitialize()	
     -- Set up our modules
 	LibSort = Apollo.GetPackage("Wob:LibSort-1.0").tPackage
-	GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
+	self.GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
+
+	self.LibSort = LibSort
 	-- Check if Inventory is loaded
-	self.inventory = Apollo.GetAddon("Inventory")
-	self.bank = Apollo.GetAddon("BankViewer")
+	if Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
+	if Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end
 
 	self.xmlDoc = XmlDoc.CreateFromFile("SenorPlow.xml")
-	self.xmlDoc2 = XmlDoc.CreateFromFile("NewForm.xml")
+	
 	Apollo.RegisterEventHandler("WindowManagementAdd", "WindowManagementAdd", self)
+	
+	-- Space Stash integration
+	if Apollo.GetAddonInfo("SpaceStashCore").bRunning ~= 0 then self.spaceStashCore = Apollo.GetAddon("SpaceStashCore") end
+	if Apollo.GetAddonInfo("SpaceStashInventory").bRunning ~= 0 then self.spaceStashInventory = Apollo.GetAddon("SpaceStashInventory") end
+	if Apollo.GetAddonInfo("SpaceStashBank").bRunning ~= 0 then self.spaceStashBank = Apollo.GetAddon("SpaceStashBank") end
+	Apollo.RegisterEventHandler("SpaceStashCore_OpenOptions", "SpaceStashCore_OpenOptions", self)
 
 	-- Extend our dropdown		
 	LibSort:Register("MrPlow", "Family", "Sort by Item Family", "family", function(...) return MrPlow:FamilySort(...) end)
@@ -57,9 +50,7 @@ function MrPlow:OnLoad()
 	LibSort:Register("MrPlow", "Name", "Sort by Name", "level", function(...) return MrPlow:NameSort(...) end)
 	LibSort:Register("MrPlow", "Id", "Sort by Inventory Id", "id", function(...) return MrPlow:IdSort(...) end)
 
-	LibSort:RegisterDefaultOrder("MrPlow", {"Family", "Slot", "Category"}, {"PowerLevel","Level", "Name", "Id"})
-
-	self.LibSort = LibSort
+	LibSort:RegisterDefaultOrder("MrPlow", {"Family", "Slot", "Category"}, {"PowerLevel", "Level", "Name", "Id"})
 
 	local GeminiLogging = Apollo.GetPackage("Gemini:Logging-1.2").tPackage
   	self.glog = GeminiLogging:GetLogger({
@@ -68,13 +59,43 @@ function MrPlow:OnLoad()
         appender = "GeminiConsole"
   	})
 
-
+  	-- Default sort order
+	self.config = {
+		Lookups = { Family = MrPlow.Lookups.Family.Order,
+					Category = MrPlow.Lookups.Category.Order,
+					Slot = MrPlow.Lookups.Slot.Order
+		}
+	}
+  	
 end
 
 
 -----------------------------------------------------------------------------------------------
 -- MrPlow OnDocLoaded
 -----------------------------------------------------------------------------------------------
+local function TableMerge(t1, t2)
+  for k,v in pairs(t2) do
+    if type(v) == "table" then
+      if type(t1[k] or false) == "table" then
+        TableMerge(t1[k] or {}, t2[k] or {})
+      else t1[k] = v end
+    else t1[k] = v end
+  end
+  return t1
+end
+
+function MrPlow:OnSave(eLevel)
+	if eLevel ~= GameLib.CodeEnumAddonSaveLevel.Character then return nil end
+	return self.config or {}
+end
+
+function MrPlow:OnRestore(eLevel, tData)	
+	TableMerge(self.config, tData)
+
+	MrPlow.Lookups.Family.Order = self.config.Lookups.Family
+	MrPlow.Lookups.Category.Order = self.config.Lookups.Category
+	MrPlow.Lookups.Slot.Order = self.config.Lookups.Slot
+end
 
 
 function MrPlow:WindowManagementAdd(args)
@@ -82,6 +103,47 @@ function MrPlow:WindowManagementAdd(args)
 	local bank = self.bank 
 	local gbank = self.gbank 
 
+---- Space Stash ----------------
+	if args.strName == "SpaceStashInventory" then 
+		-- We'll assume the options panel is created too
+		local prompt = self.spaceStashCore.SSISortChooserButton:FindChild("ChoiceContainer")
+		local a,b,c,d = prompt:GetAnchorOffsets()
+		prompt:SetAnchorOffsets(a,b,c, d + 27)
+		local bottom = self.spaceStashCore.SSISortChooserButton:FindChild("Choice4")
+		self.spaceStashCore.bottom = bottom
+		self.spaceStashCore.prompt = prompt
+		self.wndMain = self:CreateSortOption("SSCGR1OPT3", prompt)
+		a,b,c,d = self.wndMain:GetAnchorOffsets()
+		self.wndMain:SetAnchorOffsets(a + 2, b +11, c - 2, d + 11)
+		bottom:ChangeArt("BK3:btnHolo_ListView_Mid")
+
+		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
+			self.spaceStashInventory:SetSortMehtod(function(...) return LibSort:Comparer(...) end)
+			self.spaceStashCore.SSISortChooserButton:SetText("All")
+			self.wndMain:SetCheck(true)
+		end
+		return
+	end
+
+	if args.strName == "SpaceStashBank" then
+		-- Now we're loaded, set the 4th option to be our sort
+		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
+			self.spaceStashBank.wndBankFrame:FindChild("BankWindow"):SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+			self.spaceStashBank.wndBankFrame:FindChild("BankWindow"):SetSort(true)					
+		end
+		-- And hook the clear option
+		self:PostHook(self.spaceStashCore, "OnInventorySortSelected", 
+			function(...)
+				local wndHandler = ...
+				if wndHandler:GetName() == "Choice1" then 
+					self.spaceStashBank.wndBank:FindChild("BankWindow"):SetItemSortComparer(nil)
+					self.spaceStashBank.wndBank:FindChild("BankWindow"):SetSort(false)
+				end
+			end)				
+		return
+	end		
+
+------ Carbine Inventory -------------
 	if args.strName == Apollo.GetString("InterfaceMenu_Inventory") then 
 			
 		local prompt = self.inventory.wndMain:FindChild("ItemSortPrompt")
@@ -92,7 +154,7 @@ function MrPlow:WindowManagementAdd(args)
 		inventory.wndMain:FindChild("IconBtnSortQuality"):ChangeArt("BK3:btnHolo_ListView_Mid")
 
 		-- Create our additional button and hook it in
-		self.wndMain = Apollo.LoadForm(self.xmlDoc, "IconBtnSortAll", prompt , self)
+		self.wndMain = MrPlow:CreateSortOption("IconSortBtns", prompt)
 		self.wndForm = Apollo.LoadForm(self.xmlDoc2, "MrPlowForm", nil , self)
 		
 		if self.wndMain == nil then
@@ -100,27 +162,22 @@ function MrPlow:WindowManagementAdd(args)
 			return
 		end
 
+		local config = self.wndMain:FindChild("ConfigButton")
+
 		if inventory.nSortItemType == 4 and inventory.bShouldSortItems then
 			self.wndMain:SetCheck(inventory.bShouldSortItems)
 			inventory.wndMainBagWindow:SetSort(inventory.bShouldSortItems)			
 			inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
 		end	
 	end
-	self.inventoryHooks = {}
-	
-	if args.strName == Apollo.GetString("Bank_Header") then 		
+
+------ Carbine Bank -------------
+	if args.strName == Apollo.GetString("Bank_Header") then 				
 		bank.bagWindow = bank.wndMain:FindChild("MainBagWindow")
 
 		-- Hook into the sort function to reflect it into the bank
-		
-		self.inventoryHooks.OnOptionsSortItemsOff = inventory.OnOptionsSortItemsOff
-		inventory.OnOptionsSortItemsOff = 
-			function(...)
-				self.inventoryHooks.OnOptionsSortItemsOff(inventory, ...)
-				bank.bagWindow:SetSort(false)
-			end
-		
-		
+		self:PostHook(inventory, "OnOptionsSortItemsOff", function() bank.bagWindow:SetSort(false) end)
+				
 		if inventory.nSortItemType == 4 and inventory.bShouldSortItems then
 			bank.bagWindow:SetSort(inventory.bShouldSortItems)
 			self:SortBank()	
@@ -130,9 +187,23 @@ end
 
 
 function MrPlow:SortBank()
-	self.bank.bagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+	if self.bank and self.bank.bagWindow then
+		self.bank.bagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+	end
+	if self.spaceStashBank then
+		self.spaceStashBank.wndBankFrame:FindChild("BankWindow"):SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+	end
 end
 
+
+function MrPlow:SortInventory()
+	if self.inventory then
+		self.inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+	end
+	if self.spaceStashInventory then
+		self.spaceStashInventory:SetSortMehtod(function(...) return LibSort:Comparer(...) end)
+	end
+end
 
 
 --- Sorting Functions -----
@@ -141,15 +212,27 @@ end
 -- IconBtnSortAll Functions
 ---------------------------------------------------------------------------------------------------
 function MrPlow:OnOptionsSortItemsByAll( wndHandler, wndControl, eMouseButton )
-	self.inventory.bShouldSortItems = true
-	self.inventory.nSortItemType = 4
-	self.inventory.wndMainBagWindow:SetSort(true)
-	self.inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
-	self.inventory.wndIconBtnSortDropDown:SetCheck(false)
-end
+	
+	if self.inventory then
+		self.inventory.bShouldSortItems = true
+		self.inventory.nSortItemType = 4
+		self.inventory.wndMainBagWindow:SetSort(true)
+		self.inventory.wndMainBagWindow:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+		self.inventory.wndIconBtnSortDropDown:SetCheck(false)
+	end
 
------------------------------------------------------------------------------------------------
--- MrPlow Instance
------------------------------------------------------------------------------------------------
-SenorPlow = MrPlow:new()
-SenorPlow:Init()
+	if self.spaceStashCore then
+		self.spaceStashCore.db.profile.config.auto.inventory.sort = 4
+		self.spaceStashCore.SSISortChooserButton:SetText(wndHandler:GetText())		
+    	self.spaceStashCore.SSISortChooserButton:FindChild("ChoiceContainer"):Show(false,true)
+	end
+
+	if self.spaceStashInventory then		
+		self.spaceStashInventory:SetSortMehtod(function(...) return LibSort:Comparer(...) end)
+	end
+
+	if self.spaceStashBank then
+		self.spaceStashBank.wndBankFrame:FindChild("BankWindow"):SetItemSortComparer(function(...) return LibSort:Comparer(...) end)
+		self.spaceStashBank.wndBankFrame:FindChild("BankWindow"):SetSort(true)
+	end
+end
