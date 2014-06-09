@@ -10,5 +10,5 @@
     <Script Name="Frames.lua"/>
     <Script Name="SenorPlow.lua"/>
     <Script Name="SortFunctions.lua"/>
-    <Form Name="SenorPlow.xml"/>
+    
 </Addon>

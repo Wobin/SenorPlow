@@ -25,22 +25,24 @@ function MrPlow:OnInitialize()
     -- Set up our modules
 	LibSort = Apollo.GetPackage("Wob:LibSort-1.0").tPackage
 	self.GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
+	
 
 	self.LibSort = LibSort
 	-- Check if Inventory is loaded
 	if Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
 	if Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end
-
-	self.xmlDoc = XmlDoc.CreateFromFile("SenorPlow.xml")
+	
+	--self.xmlDoc = XmlDoc.CreateFromFile("SenorPlow.xml")
 	
 	Apollo.RegisterEventHandler("WindowManagementAdd", "WindowManagementAdd", self)
 	
 	-- Space Stash integration
-	if Apollo.GetAddonInfo("SpaceStashCore").bRunning ~= 0 then self.spaceStashCore = Apollo.GetAddon("SpaceStashCore") end
-	if Apollo.GetAddonInfo("SpaceStashInventory").bRunning ~= 0 then self.spaceStashInventory = Apollo.GetAddon("SpaceStashInventory") end
-	if Apollo.GetAddonInfo("SpaceStashBank").bRunning ~= 0 then self.spaceStashBank = Apollo.GetAddon("SpaceStashBank") end
+	if Apollo.GetAddonInfo("SpaceStashCore") and Apollo.GetAddonInfo("SpaceStashCore").bRunning ~= 0 then self.spaceStashCore = Apollo.GetAddon("SpaceStashCore") end
+	if Apollo.GetAddonInfo("SpaceStashInventory") and Apollo.GetAddonInfo("SpaceStashInventory").bRunning ~= 0 then self.spaceStashInventory = Apollo.GetAddon("SpaceStashInventory") end
+	if Apollo.GetAddonInfo("SpaceStashBank") and Apollo.GetAddonInfo("SpaceStashBank").bRunning ~= 0 then self.spaceStashBank = Apollo.GetAddon("SpaceStashBank") end
 	Apollo.RegisterEventHandler("SpaceStashCore_OpenOptions", "SpaceStashCore_OpenOptions", self)
-
+	
+	
 	-- Extend our dropdown		
 	LibSort:Register("MrPlow", "Family", "Sort by Item Family", "family", function(...) return MrPlow:FamilySort(...) end)
 	LibSort:Register("MrPlow", "Slot", "Sort by Item Slot", "slot", function(...) return MrPlow:SlotSort(...) end)
@@ -52,13 +54,14 @@ function MrPlow:OnInitialize()
 
 	LibSort:RegisterDefaultOrder("MrPlow", {"Family", "Slot", "Category"}, {"PowerLevel", "Level", "Name", "Id"})
 
+	
 	local GeminiLogging = Apollo.GetPackage("Gemini:Logging-1.2").tPackage
   	self.glog = GeminiLogging:GetLogger({
         level = GeminiLogging.DEBUG,
         pattern = "%d %n %c %l - %m",
         appender = "GeminiConsole"
   	})
-
+  	self.glog:debug("loaded mrplow")
   	-- Default sort order
 	self.config = {
 		Lookups = { Family = MrPlow.Lookups.Family.Order,
@@ -89,7 +92,9 @@ function MrPlow:OnSave(eLevel)
 	return self.config or {}
 end
 
-function MrPlow:OnRestore(eLevel, tData)	
+function MrPlow:OnRestore(eLevel, tData)
+	self.config = self.config or {}
+	
 	TableMerge(self.config, tData)
 
 	MrPlow.Lookups.Family.Order = self.config.Lookups.Family
