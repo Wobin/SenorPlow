@@ -25,6 +25,9 @@ local tDependencies = {
 local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon(MrPlow, "MrPlow", bHasConfigureFunction, tDependencies, "Gemini:Hook-1.0")
 
 
+local prototype = {
+	Connect = function(parent) self.Parent = parent return self end
+}
 -----------------------------------------------------------------------------------------------
 -- MrPlow OnInitialize
 -----------------------------------------------------------------------------------------------
@@ -32,15 +35,20 @@ function MrPlow:OnInitialize()
     -- Set up our modules
 	LibSort = Apollo.GetPackage("Wob:LibSort-1.0").tPackage
 	self.GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
-	
+
+	self:SetDefaultModuleLibraries("Gemini:Hook-1.0", "Gemini:Event-1.0")
+	self:SetDefaultModulePrototype(prototype)
 
 	self.LibSort = LibSort
+
+	local CarbineInventoryModule = self:GetModule("CarbineInventoryModule"):Connect(self)
+	local CarbineBankModule = self:GetModule("CarbineBankModule"):Connect(self)
+
 	-- Check if Inventory is loaded
 	if Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
 	if Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end
 	
-	--self.xmlDoc = XmlDoc.CreateFromFile("SenorPlow.xml")
-	
+		
 	Apollo.RegisterEventHandler("WindowManagementAdd", "WindowManagementAdd", self)
 	
 	-- Space Stash integration
@@ -108,6 +116,14 @@ function MrPlow:OnRestore(eLevel, tData)
 	MrPlow.Lookups.Category.Order = self.config.Lookups.Category
 	MrPlow.Lookups.Slot.Order = self.config.Lookups.Slot
 end
+
+
+--- API ---
+
+function MrPlow:GetSortFunction()
+	return function(...) LibSort:Comparer(...) end
+end
+
 
 
 function MrPlow:WindowManagementAdd(args)
