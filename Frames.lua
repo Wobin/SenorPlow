@@ -1,5 +1,5 @@
 local MrPlow = MrPlow
-
+local GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
 
 local tListFrameDef = {
     AnchorPoints = {0, 1, 1, 0},
@@ -98,10 +98,7 @@ local tIconBtnSortAllDef = {
     Escapable = true, 
     Overlapped = true, 
     TextId = "CRB_MasterLoot_Filter_All", 
-    RadioDisallowNonSelection = true,     
-    Events = {
-        ButtonCheck = function(...) MrPlow.OnOptionsSortItemsByAll(...) end,
-    },
+    RadioDisallowNonSelection = true,         
     Children = {
         {
             AnchorOffsets = { -22, 9, 6, 41 },
@@ -260,38 +257,29 @@ function MrPlow:ShowConfig()
     self:CreateOptionPanel():Show(not self.OptionsPanel:IsShown())
 end
 
-function MrPlow:CreateSortOption(radioGroup, parent)
-    local GeminiGUI = self.GeminiGUI
+function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide)
     local tButton = GeminiGUI:Create(tIconBtnSortAllDef)
     tButton:SetOption("RadioGroup", radioGroup)
+    tButton:AddEvent("ButtonCheck", function(...) target:OnOptionsSortItemsByAll(...) end)
     self.SortOptionButton = tButton:GetInstance(self, parent)
+    self.alongSide = alongSide
     return self.SortOptionButton
 end
 
 function MrPlow:CreateOptionPanel()
     if not self.OptionsPanel then         
-        local parent 
-        if self.inventory then
-            parent = self.inventory.wndMain:FindChild("OptionsContainer")
-        end
-        if self.spaceStashCore then
-            parent = self.spaceStashCore.SSIOptionsFrame
-        end
-        self.OptionsPanel = self.GeminiGUI:Create(tConfigDef):GetInstance(MrPlow, parent)      
+        self.OptionsPanel = GeminiGUI:Create(tConfigDef):GetInstance(MrPlow, self.alongSide)      
         self.OptionsPanel:Show(false)
     end    
     return self.OptionsPanel
 end
 
 function MrPlow:CreateBaseFrame()
-    local GeminiGUI = self.GeminiGUI
     local tWindow = GeminiGUI:Create(tListFrameDef)
     self.List = tWindow:GetInstance(MrPlow, self.OptionsPanel)
 end
 
 function MrPlow:CreateListOfButtons(group)
-    local GeminiGUI = self.GeminiGUI
-    
     if not self.List then self:CreateBaseFrame() end
 
     local tButton = GeminiGUI:Create(tListButtonDef)
@@ -402,6 +390,9 @@ function MrPlow:ReorderTable(list, itemA, itemB)
     self:RerankList(list.self)
 
     -- also resort the stuff in inventory/bank
-    self:SortInventory()
-    self:SortBank()
+    for name, mod in self:IterateModules() do
+        if type(mod.OnOptionsSortItemsByAll) == "function" then
+            mod:OnOptionsSortItemsByAll()
+        end
+    end
 end

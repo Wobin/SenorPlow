@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Addon Author="Wobin" APIVersion="8" Name="SeñorPlow" Description="Extending the sorting functionality of the inventory">
 	<Script Name="Libs\LibSort-1.0\LibSort.lua"/>
+	<Script Name="Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
+	<Script Name="Libs\GeminiEvent-1.0\GeminiEvent-1.0.lua"/>
 	<Script Name="Libs\GeminiAddon-1.0\GeminiAddon.lua"/>
 	<Script Name="Libs\GeminiGUI-1.0\GeminiGUI.lua"/>
 	<Script Name="Libs\GeminiHook-1.0\GeminiHook-1.0.lua"/>
@@ -10,5 +12,6 @@
     <Script Name="Frames.lua"/>
     <Script Name="SenorPlow.lua"/>
     <Script Name="SortFunctions.lua"/>
-    
+    <Script Name="Modules\CarbineInventoryModule.lua"/>    
+    <Script Name="Modules\SpaceStashModule.lua"/>
 </Addon>
