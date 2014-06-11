@@ -27,6 +27,7 @@ local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon(MrPlow, "
 
 local prototype = {
 	Connect = function(parent) self.Parent = parent return self end
+	OnInitialize = function() self:RegisterEvent("WindowManagementAdd") end
 }
 -----------------------------------------------------------------------------------------------
 -- MrPlow OnInitialize
@@ -45,8 +46,7 @@ function MrPlow:OnInitialize()
 	local CarbineBankModule = self:GetModule("CarbineBankModule"):Connect(self)
 
 	-- Check if Inventory is loaded
-	if Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
-	if Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end
+	
 	
 		
 	Apollo.RegisterEventHandler("WindowManagementAdd", "WindowManagementAdd", self)
