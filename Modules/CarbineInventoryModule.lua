@@ -55,7 +55,7 @@ function CarbineInventoryModule:OnOptionsSortItemsByAll(wndHandler, wndControl, 
 		Inventory.wndIconBtnSortDropDown:SetCheck(false)
 	end
 
-	if Bank.bagWindow then
+	if Bank and Bank.bagWindow then
 		Parent:SetSortOnBag(Bank.bagWindow)
 	end
 end

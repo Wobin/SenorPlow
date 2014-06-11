@@ -30,7 +30,7 @@ function SpaceStashModule:WindowManagementAdd(name, args)
 		a,b,c,d = self.optionChoice:GetAnchorOffsets()
 		self.optionChoice:SetAnchorOffsets(a + 2, b +11, c - 2, d + 11)
 		
-		-- If we're set to sort all from a prevoius choice, then sort it
+		-- If we're set to sort all from a previous choice, then sort it
 		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
 			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer(...) end)
 			self.spaceStashCore.SSISortChooserButton:SetText("All")
@@ -59,7 +59,8 @@ end
 function SpaceStashModule:OnOptionsSortItemsByAll(wndHandler, wndControl, eMouseButton )
 	if self.spaceStashCore then
 		self.spaceStashCore.db.profile.config.auto.inventory.sort = 4
-		self.spaceStashCore.SSISortChooserButton:SetText(wndControl:GetText())		
+		self.spaceStashCore.SSISortChooserButton:SetText("All")		
+		self.optionChoice:SetCheck(true)
     	self.spaceStashCore.SSISortChooserButton:FindChild("ChoiceContainer"):Show(false,true)
 	end
 
