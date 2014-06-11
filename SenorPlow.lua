@@ -1,6 +1,13 @@
 -----------------------------------------------------------------------------------------------
 -- Client Lua Script for SeñorPlow
 -- Copyright (c) Wobin. All rights reserved
+--
+-- As he spake these things unto thee, because the LORD hath promised: for we have seen so far 
+-- is sufficient for writing any purely numerical program that one could write in, say, C or 
+-- Pascal.
+--             A reading from the Book of Markov - Chapter 29 Verses 5-14 
+-- 						Structure and Interpretation of Computer Programs - King James Version
+--																	http://tinyurl.com/lkafacq
 -----------------------------------------------------------------------------------------------
  
 require "Window"
