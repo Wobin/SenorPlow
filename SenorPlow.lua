@@ -76,7 +76,7 @@ end
 
 function MrPlow:SetSortOnBag(bag)
 	bag:SetSort(true)
-	bag:SetItemSortComparer(function(...) return LibSort:Comparer(...) end)	
+	bag:SetItemSortComparer(function(...) return LibSort:Comparer("MrPlow", ...) end)	
 end
 
 function MrPlow:UnsetSortOnBag(bag)

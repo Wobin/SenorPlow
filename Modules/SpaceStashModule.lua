@@ -10,7 +10,7 @@ end
 
 function SpaceStashModule:WindowManagementAdd(name, args)
 	
-	if args.strName == "SpaceStashInventory" then 
+	if args.strName == "SpaceStashCore" then 
 		-- We'll assume the options panel is created too
 		-- Find the dropdown
 		local prompt = self.spaceStashCore.SSISortChooserButton:FindChild("ChoiceContainer")
@@ -32,7 +32,7 @@ function SpaceStashModule:WindowManagementAdd(name, args)
 		
 		-- If we're set to sort all from a previous choice, then sort it
 		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
-			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer(...) end)
+			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)
 			self.spaceStashCore.SSISortChooserButton:SetText("All")
 			self.optionChoice:SetCheck(true)
 		end
@@ -65,7 +65,7 @@ function SpaceStashModule:OnOptionsSortItemsByAll(wndHandler, wndControl, eMouse
 	end
 
 	if self.spaceStashInventory then		
-		self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer(...) end)
+		self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow",...) end)
 	end
 
 	if self.spaceStashBank then

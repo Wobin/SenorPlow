@@ -1,5 +1,5 @@
 
-local MAJOR,MINOR = "Wob:LibSort-1.0", 1
+local MAJOR,MINOR = "Wob:LibSort-1.0", 2
 -- Get a reference to the package information if any
 local APkg = Apollo.GetPackage(MAJOR)
 -- If there was an older version loaded we need to see if this is newer
@@ -28,7 +28,7 @@ local function makePrefix(name)
 	return removeSpaces(name) .. "_"
 end
 
-LibSort.FirstInChain = nil
+LibSort.FirstInChain = {}
 
 LibSort.RegisteredCallbacks = {}
 LibSort.AddonOrder = {}
@@ -36,51 +36,48 @@ LibSort.DefaultOrdersLow = {}
 LibSort.DefaultOrdersHigh = {}
 LibSort.TiebreakerChain = {}
 
-function LibSort:Comparer(itemA, itemB)
-	if self.FirstInChain then
-		return self:ProcessOrderFunction(self.FirstInChain, self.TiebreakerChain[self.FirstInChain.key], itemA, itemB)
+function LibSort:Comparer(addonName, itemA, itemB)
+	if self.FirstInChain[addonName] then
+		return self:ProcessOrderFunction(addonName, self.FirstInChain[addonName], self.TiebreakerChain[addonName][self.FirstInChain[addonName].key], itemA, itemB)
 	end
 end
 
-function LibSort:ReOrderKeys()
+function LibSort:ReOrderKeys(addonName)
 	local first 
 	local previous
-	for i, addonName in ipairs(self.AddonOrder) do		
-		if self.DefaultOrdersLow[addonName] then
-			for _, name in ipairs(self.DefaultOrdersLow[addonName]) do
-				local data = self.RegisteredCallbacks[addonName][name] 
-				if data then -- we skip the ones we haven't registered yet
-					first, previous = self:SetKeyOrder(first, previous, data)
-				end
+	if self.DefaultOrdersLow[addonName] then
+		for _, name in ipairs(self.DefaultOrdersLow[addonName]) do
+			local data = self.RegisteredCallbacks[addonName][name] 
+			if data then -- we skip the ones we haven't registered yet
+				first, previous = self:SetKeyOrder(addonName, first, previous, data)
 			end
 		end
-	end
-	for i, addonName in ipairs(self.AddonOrder) do		
-		if self.DefaultOrdersHigh[addonName] then
-			for _, name in ipairs(self.DefaultOrdersHigh[addonName]) do
-				local data = self.RegisteredCallbacks[addonName][name] 
-				if data then -- we skip the ones we haven't registered yet
-					first, previous = self:SetKeyOrder(first, previous, data)
-				end
+	end	
+	if self.DefaultOrdersHigh[addonName] then
+		for _, name in ipairs(self.DefaultOrdersHigh[addonName]) do
+			local data = self.RegisteredCallbacks[addonName][name] 
+			if data then -- we skip the ones we haven't registered yet
+				first, previous = self:SetKeyOrder(addonName, first, previous, data)
 			end
-		end					
-	end
+		end
+	end					
 end
 
-function LibSort:SetKeyOrder(first, previous, data)
+function LibSort:SetKeyOrder(addonName, first, previous, data)
 	if not first then 
 		first = true 
-		self.FirstInChain = data
+		self.FirstInChain[addonName] = data
+		self.TiebreakerChain[addonName] = {}
 	else
 		if previous then
-			self.TiebreakerChain[previous] = data
+			self.TiebreakerChain[addonName][previous] = data
 		end
 	end	
 	return first, data.key
 end
 
 
-function LibSort:ProcessOrderFunction(data, tiebreaker, itemA, itemB)
+function LibSort:ProcessOrderFunction(addonName, data, tiebreaker, itemA, itemB)
 	if itemA == itemB then
 		return 0
 	end
@@ -93,8 +90,8 @@ function LibSort:ProcessOrderFunction(data, tiebreaker, itemA, itemB)
 	
 
 	local response = data.func(itemA, itemB)
-	if response == 0 and self.TiebreakerChain[data.key] then		
-		return self:ProcessOrderFunction(tiebreaker, self.TiebreakerChain[tiebreaker.key], itemA, itemB)
+	if response == 0 and self.TiebreakerChain[addonName][data.key] then		
+		return self:ProcessOrderFunction(tiebreaker, self.TiebreakerChain[addonName][tiebreaker.key], itemA, itemB)
 	else
 		return response
 	end
@@ -120,13 +117,13 @@ function LibSort:Register(addonName, name, desc, key, func)
 	self.RegisteredCallbacks[addonName][name] = {key = makePrefix(addonName)..key, func = func, desc = desc, name = name}
 	if not self.DefaultOrdersHigh[addonName] then self.DefaultOrdersHigh[addonName] = {} end
 	table.insert(self.DefaultOrdersHigh[addonName], name)
-	self:ReOrderKeys()
+	self:ReOrderKeys(addonName)
 end
 
 function LibSort:RegisterDefaultOrder(addonName, keyTableLow, keyTableHigh)
 	self.DefaultOrdersHigh[addonName] = keyTableHigh
 	self.DefaultOrdersLow[addonName] = keyTableLow
-	self:ReOrderKeys()
+	self:ReOrderKeys(addonName)
 end
 
 Apollo.RegisterPackage(LibSort, MAJOR, MINOR, {})
