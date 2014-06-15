@@ -53,13 +53,13 @@ function MrPlow:OnInitialize()
 	if self.SpaceStashModule then self.SpaceStashModule:Connect(self) end
 
 	-- Extend our dropdown		
-	LibSort:Register("MrPlow", "Family", "Sort by Item Family", "family", function(...) return MrPlow:FamilySort(...) end)
-	LibSort:Register("MrPlow", "Slot", "Sort by Item Slot", "slot", function(...) return MrPlow:SlotSort(...) end)
-	LibSort:Register("MrPlow", "Category", "Sort by Item Category", "category", function(...) return MrPlow:CategorySort(...) end)
-	LibSort:Register("MrPlow", "Level", "Sort by Required Level", "level", function(...) return MrPlow:LevelSort(...) end)
-	LibSort:Register("MrPlow", "PowerLevel", "Sort by Power Level", "powerlevel", function(...) return MrPlow:PowerLevelSort(...) end)
-	LibSort:Register("MrPlow", "Name", "Sort by Name", "level", function(...) return MrPlow:NameSort(...) end)
-	LibSort:Register("MrPlow", "Id", "Sort by Inventory Id", "id", function(...) return MrPlow:IdSort(...) end)
+	LibSort:Register("MrPlow", "Family", 		"Sort by Item Family", 		"family", function(...) return MrPlow:FamilySort(...) end)
+	LibSort:Register("MrPlow", "Slot", 			"Sort by Item Slot", 		"slot", function(...) return MrPlow:SlotSort(...) end)
+	LibSort:Register("MrPlow", "Category", 		"Sort by Item Category", 	"category", function(...) return MrPlow:CategorySort(...) end)
+	LibSort:Register("MrPlow", "Level", 		"Sort by Required Level", 	"level", function(...) return MrPlow:LevelSort(...) end)
+	LibSort:Register("MrPlow", "PowerLevel", 	"Sort by Power Level", 		"powerlevel", function(...) return MrPlow:PowerLevelSort(...) end)
+	LibSort:Register("MrPlow", "Name", 			"Sort by Name", 			"name", function(...) return MrPlow:NameSort(...) end)
+	LibSort:Register("MrPlow", "Id", 			"Sort by Inventory Id", 	"id", function(...) return MrPlow:IdSort(...) end)
 
 	LibSort:RegisterDefaultOrder("MrPlow", {"Family", "Slot", "Category"}, {"PowerLevel", "Level", "Name", "Id"})
 
