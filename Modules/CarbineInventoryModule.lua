@@ -1,3 +1,4 @@
+local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 local CarbineInventoryModule = MrPlow:NewModule("CarbineInventoryModule")
 local Parent, Inventory, Bank
 
@@ -10,7 +11,7 @@ function CarbineInventoryModule:OnEnable()
 end
 
 function CarbineInventoryModule:WindowManagementAdd(name, args)
-	if args.strName == Apollo.GetString("InterfaceMenu_Inventory") then 	
+	if Inventory and args.strName == Apollo.GetString("InterfaceMenu_Inventory") then 	
 	
 		local prompt = Inventory.wndMain:FindChild("ItemSortPrompt")
 		prompt:SetAnchorOffsets(-26, 9, 26, 205)
@@ -28,7 +29,7 @@ function CarbineInventoryModule:WindowManagementAdd(name, args)
 		return
 	end
 
-	if args.strName == Apollo.GetString("Bank_Header") then 
+	if Bank and args.strName == Apollo.GetString("Bank_Header") then 
 		
 		Bank.bagWindow = Bank.wndMain:FindChild("MainBagWindow")	
 		-- Hook into the sort function to reflect it into the bank

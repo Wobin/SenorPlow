@@ -8,10 +8,11 @@
 	<Script Name="Libs\GeminiHook-1.0\GeminiHook-1.0.lua"/>
 	<Script Name="Libs\GeminiLogging\inspect.lua"/>
 	<Script Name="Libs\GeminiLogging\GeminiLogging.lua"/>
+    <Script Name="SenorPlow.lua"/>
     <Script Name="Constants.lua"/>
     <Script Name="Frames.lua"/>
-    <Script Name="SenorPlow.lua"/>
     <Script Name="SortFunctions.lua"/>
     <Script Name="Modules\CarbineInventoryModule.lua"/>    
+    <Script Name="Modules\VikingInventoryModule.lua"/>    
     <Script Name="Modules\SpaceStashModule.lua"/>
 </Addon>

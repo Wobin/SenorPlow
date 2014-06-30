@@ -22,7 +22,7 @@ local tDependencies = {
 		"Wob:LibSort-1.0", "Gemini:GUI-1.0"
 }	
 
-local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon(MrPlow, "MrPlow", bHasConfigureFunction, tDependencies, "Gemini:Hook-1.0")
+local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon("MrPlow", bHasConfigureFunction, tDependencies, "Gemini:Hook-1.0")
 
 MrPlow:SetDefaultModulePackages("Gemini:Hook-1.0", "Gemini:Event-1.0")
 MrPlow:SetDefaultModulePrototype({
@@ -44,13 +44,20 @@ function MrPlow:OnInitialize()
 	
 	self.LibSort = LibSort
 
-	-- Base Carbine Inventory/Bank addons
-	self.CarbineInventoryModule = self:GetModule("CarbineInventoryModule", true)
-	if self.CarbineInventoryModule then self.CarbineInventoryModule:Connect(self) end
-	
+	self.VikingInventoryModule = self:GetModule("VikingInventoryModule", true)
+	if self.VikingInventoryModule then self.VikingInventoryModule:Connect(self) end
+
 	-- SpaceStash
 	self.SpaceStashModule = self:GetModule("SpaceStashModule", true)
 	if self.SpaceStashModule then self.SpaceStashModule:Connect(self) end
+	
+	if not self.VikingInventoryModule:IsActive() then
+	-- Base Carbine Inventory/Bank addons
+		self.CarbineInventoryModule = self:GetModule("CarbineInventoryModule", true)
+		if self.CarbineInventoryModule then self.CarbineInventoryModule:Connect(self) end
+	end
+
+	
 
 	-- Extend our dropdown		
 	LibSort:Register("MrPlow", "Family", 		"Sort by Item Family", 		"family", function(...) return MrPlow:FamilySort(...) end)

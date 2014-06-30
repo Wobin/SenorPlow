@@ -1,7 +1,7 @@
-local MrPlow = MrPlow
+local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 local GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
 
-local tListFrameDef = {
+MrPlow.tListFrameDef = {
     AnchorPoints = {0, 1, 1, 0},
     AnchorOffsets = { -40, 0, 90, 285},
     RelativeToClient = true, 
@@ -46,7 +46,7 @@ local tButtonExpand = {
     AnchorOffsets = { 10, 10, 26, 28},
     RelativeToClient = true
 }
-local tListButtonDef =  {
+MrPlow.tListButtonDef =  {
     AnchorOffsets = { -2, 0, 250, 30 },
     WidgetType = "PushButton", 
     Base = "CRB_PlayerPathSprites:btnPP_BaseGrey", 
@@ -126,7 +126,7 @@ local tIconBtnSortAllDef = {
     },
 }
   
-local tConfigDef = {
+MrPlow.tConfigDef = {
     AnchorPoints = {1, 0, 1,0},
     AnchorOffsets = { -15, -10, 310, 260 },
     RelativeToClient = true, 
@@ -257,7 +257,7 @@ function MrPlow:ShowConfig()
     self:CreateOptionPanel():Show(not self.OptionsPanel:IsShown())
 end
 
-function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide)
+function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide, buttonDefinition)
     local tButton = GeminiGUI:Create(tIconBtnSortAllDef)
     tButton:SetOption("RadioGroup", radioGroup)
     tButton:AddEvent("ButtonCheck", function(...) target:OnOptionsSortItemsByAll(...) end)
@@ -268,21 +268,21 @@ end
 
 function MrPlow:CreateOptionPanel()
     if not self.OptionsPanel then         
-        self.OptionsPanel = GeminiGUI:Create(tConfigDef):GetInstance(MrPlow, self.alongSide)      
+        self.OptionsPanel = GeminiGUI:Create(MrPlow.tConfigDef):GetInstance(MrPlow, self.alongSide)      
         self.OptionsPanel:Show(false)
     end    
     return self.OptionsPanel
 end
 
 function MrPlow:CreateBaseFrame()
-    local tWindow = GeminiGUI:Create(tListFrameDef)
+    local tWindow = GeminiGUI:Create(MrPlow.tListFrameDef)
     self.List = tWindow:GetInstance(MrPlow, self.OptionsPanel)
 end
 
 function MrPlow:CreateListOfButtons(group)
     if not self.List then self:CreateBaseFrame() end
 
-    local tButton = GeminiGUI:Create(tListButtonDef)
+    local tButton = GeminiGUI:Create(MrPlow.tListButtonDef)
 
     local listWindow = self.List:FindChild("ListWindow")
     
@@ -325,8 +325,8 @@ function MrPlow:RerankList(list)
 end
 
 local lastUp
-local overButton = "CRB_PlayerPathSprites:btnPP_HologramBase"
-local outButton = "CRB_PlayerPathSprites:btnPP_BaseGrey"
+MrPlow.overButton = "CRB_PlayerPathSprites:btnPP_HologramBase"
+MrPlow.outButton = "CRB_PlayerPathSprites:btnPP_BaseGrey"
 
 
 ------ Mouse functions ----
@@ -356,12 +356,12 @@ end
 function MrPlow:MouseEnter(...)
     local wndControl = ...
     self.LastButtonOver = wndControl
-    wndControl:ChangeArt(overButton)
+    wndControl:ChangeArt(MrPlow.overButton)
 end
 
 function MrPlow:MouseLeave(...)
     local wndControl = ...
-    wndControl:ChangeArt(outButton)
+    wndControl:ChangeArt(MrPlow.outButton)
 end
 
 ---- Reordering functions ----

@@ -1,5 +1,4 @@
-MrPlow = {} 
-local MrPlow = MrPlow 
+local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 
 -----------------------------------------------------------------------------------------------
 -- Constants
