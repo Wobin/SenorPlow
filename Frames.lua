@@ -3,7 +3,7 @@ local GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
 
 MrPlow.tListFrameDef = {
     AnchorPoints = {0, 1, 1, 0},
-    AnchorOffsets = { -40, 0, 90, 285},
+    AnchorOffsets = { -40, 0, 38, 285},
     RelativeToClient = true, 
     BGColor = "UI_WindowBGDefault", 
     TextColor = "UI_WindowTextDefault", 
@@ -20,7 +20,7 @@ MrPlow.tListFrameDef = {
     Children = {       
     	{
             AnchorPoints = {0, 0, 1, 1},
-            AnchorOffsets = { 5, 35, -15, -15 },
+            AnchorOffsets = { 5, 35, -10, -15 },
             RelativeToClient = true, 
             BGColor = "UI_WindowBGDefault", 
             TextColor = "UI_WindowTextDefault", 
@@ -47,7 +47,7 @@ local tButtonExpand = {
     RelativeToClient = true
 }
 MrPlow.tListButtonDef =  {
-    AnchorOffsets = { -2, 0, 250, 30 },
+    AnchorOffsets = { -2, 0, 210, 30 },
     WidgetType = "PushButton", 
     Base = "CRB_PlayerPathSprites:btnPP_BaseGrey", 
     Font = "DefaultButton", 
@@ -257,13 +257,14 @@ function MrPlow:ShowConfig()
     self:CreateOptionPanel():Show(not self.OptionsPanel:IsShown())
 end
 
-function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide, buttonDefinition)
+function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide, buttonDefinition, buttonReference)
     local tButton = GeminiGUI:Create(tIconBtnSortAllDef)
+    if not buttonReference then buttonReference = self.SortOptionButton end
     tButton:SetOption("RadioGroup", radioGroup)
     tButton:AddEvent("ButtonCheck", function(...) target:OnOptionsSortItemsByAll(...) end)
-    self.SortOptionButton = tButton:GetInstance(self, parent)
+    buttonReference = tButton:GetInstance(self, parent)
     self.alongSide = alongSide
-    return self.SortOptionButton
+    return buttonReference
 end
 
 function MrPlow:CreateOptionPanel()
@@ -298,7 +299,7 @@ function MrPlow:CreateListOfButtons(group)
         but:SetText(group.Names[name])            
     end
 
-    local extraHeight = (13 * 32) - 80
+    local extraHeight = (13 * 32) - 60
     
     local offx1, offy1, offx2, offy2 = self.List:GetAnchorOffsets()
     self.List:SetAnchorOffsets(offx1, offy1, offx2, 285 + extraHeight)

@@ -22,8 +22,8 @@ end
 function VikingInventoryModule:RestyleConfig()
 
 Parent.tConfigDef = {
-    AnchorPoints = {1, 0, 1,0},
-    AnchorOffsets = { -5, -5, 220, 140 },
+    AnchorPoints = {1, 0, 1, 0},
+    AnchorOffsets = { -5, -5, 204, 140 },
     RelativeToClient = true, 
     BGColor = "UI_WindowBGDefault", 
     TextColor = "UI_WindowTextDefault", 
@@ -72,7 +72,8 @@ Parent.tConfigDef = {
             },
         },
         {
-            AnchorOffsets = { 20, 30, 200, 60 },
+            AnchorPoints = { 0, 0, 1, 0},
+            AnchorOffsets = { 20, 30, -20, 60 },
             Class = "Button", 
             Base = "BK3:btnHolo_ListView_Simple", 
             Font = "CRB_InterfaceSmall_O", 
@@ -93,7 +94,8 @@ Parent.tConfigDef = {
             },
         },
         {
-            AnchorOffsets = { 20, 60, 200, 90 },
+            AnchorPoints = { 0, 0, 1, 0},
+            AnchorOffsets = { 20, 60, -20, 90 },
             Class = "Button", 
              Base = "BK3:btnHolo_ListView_Simple", 
             Font = "CRB_InterfaceSmall_O", 
@@ -114,7 +116,8 @@ Parent.tConfigDef = {
             },
         },
         {
-            AnchorOffsets = { 20, 90, 200, 120 },
+            AnchorPoints = { 0, 0, 1, 0},
+            AnchorOffsets = { 20, 90, -20, 120 },
             Class = "Button", 
             Base = "BK3:btnHolo_ListView_Simple", 
             Font = "CRB_InterfaceSmall_O", 
@@ -139,7 +142,7 @@ Parent.tConfigDef = {
 
 Parent.tListFrameDef = {
     AnchorPoints = {0, 1, 0, 0},
-    AnchorOffsets = { -5, -5, 220, 170},
+    AnchorOffsets = { -5, -5, 205, 200},
     RelativeToClient = true, 
     BGColor = "UI_WindowBGDefault", 
     TextColor = "UI_WindowTextDefault", 
@@ -166,7 +169,8 @@ Parent.tListFrameDef = {
             Name = "ListWindow",             
         }, 
         {
-            AnchorOffsets = { 0, 2, 220, 30 },            
+            AnchorPoints = {0, 0, 1, 0},
+            AnchorOffsets = { 0, 2, 0, 30 },            
             RelativeToClient = true, 
             BGColor = "UI_WindowBGDefault", 
             TextColor = "UI_WindowTitleYellow", 
@@ -179,7 +183,8 @@ Parent.tListFrameDef = {
 }
 
 Parent.tListButtonDef =  {
-    AnchorOffsets = { -2, 0, 170, 30 },
+    AnchorPoints = {0, 0, 1, 0},
+    AnchorOffsets = { -2, 0, -10, 30 },
     WidgetType = "PushButton", 
     Base = "BK3:btnHolo_ListView_Simple", 
     Font = "CRB_Options", 
@@ -208,7 +213,7 @@ Parent.tListButtonDef =  {
 Parent.overButton = "CRB_PlayerPathSprites:btnPP_HologramBase"
 Parent.outButton = "BK3:btnHolo_ListView_Simple"
 
-
+SendVarToRover("tst", Parent)
 end
 
 function VikingInventoryModule:WindowManagementAdd(name, args)
@@ -228,7 +233,7 @@ function VikingInventoryModule:WindowManagementAdd(name, args)
 		Inventory.wndMain:FindChild("IconBtnSortQuality"):ChangeArt("BK3:btnHolo_ListView_Mid")
 	
 		-- Create our additional button and hook it in
-		self.optionChoice = Parent:CreateSortOption("IconSortBtns", prompt, self, Inventory.wndMain:FindChild("OptionsContainer"), tPixie)		
+		self.optionChoice = Parent:CreateSortOption("IconSortBtns", prompt, self, Inventory.wndMain:FindChild("OptionsContainer"))		
 	
 		self.optionChoice:SetAnchorOffsets(0, -32, 0, 0)	
 		self.optionChoice:SetAnchorPoints(0, 1, 1, 1)
