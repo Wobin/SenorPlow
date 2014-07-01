@@ -212,8 +212,6 @@ Parent.tListButtonDef =  {
 
 Parent.overButton = "CRB_PlayerPathSprites:btnPP_HologramBase"
 Parent.outButton = "BK3:btnHolo_ListView_Simple"
-
-SendVarToRover("tst", Parent)
 end
 
 function VikingInventoryModule:WindowManagementAdd(name, args)
