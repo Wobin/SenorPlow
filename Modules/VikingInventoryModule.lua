@@ -13,10 +13,20 @@ end
 
 function VikingInventoryModule:OnEnable()
 	Parent = self.Parent
-	if Apollo.GetAddonInfo("VikingInventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("VikingInventory") end	
+	if Apollo.GetAddonInfo("VikingInventory") and Apollo.GetAddonInfo("VikingInventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("VikingInventory") end	
+    
+    if Apollo.GetAddonInfo("BankViewer") and Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end    
+
+    if not self.inventory then return self:Disable() end
+
 	Inventory = self.inventory 	
+    Bank = self.bank
 
 	if self:IsActive() then self:RestyleConfig() end
+end
+
+function VikingInventoryModule:OnDisable()
+     self:UnregisterEvent("WindowManagementAdd")
 end
 
 function VikingInventoryModule:RestyleConfig()

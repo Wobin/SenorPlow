@@ -4,10 +4,15 @@ local Parent, Inventory, Bank
 
 function CarbineInventoryModule:OnEnable()
 	Parent = self.Parent
-	if Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
-	if Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end	
-	Inventory = self.inventory 
+	if Apollo.GetAddonInfo("Inventory") and Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
+	if Apollo.GetAddonInfo("BankViewer") and Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end	
+	if not self.inventory then return self:Disable() end
+	Inventory = self.inventory 	
 	Bank = self.bank
+end
+
+function CarbineInventoryModule:OnDisable()
+	 self:UnregisterEvent("WindowManagementAdd")
 end
 
 function CarbineInventoryModule:WindowManagementAdd(name, args)
@@ -38,7 +43,6 @@ function CarbineInventoryModule:WindowManagementAdd(name, args)
 		end
 		
 		if self:ShouldSort() then		
-			Parent.glog:debug("in bank")	
 			Parent:SetSortOnBag(Bank.bagWindow)
 		end
 	end

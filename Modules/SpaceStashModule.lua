@@ -12,7 +12,11 @@ function SpaceStashModule:OnEnable()
 	if Apollo.GetAddonInfo("SpaceStashBank") and Apollo.GetAddonInfo("SpaceStashBank").bRunning ~= 0 then self.spaceStashBank = Apollo.GetAddon("SpaceStashBank") end
 	Parent = self.Parent	
 	
+	if not self.spaceStashCore then return self:Disable() end
+end
 
+function SpaceStashModule:OnDisable()
+	 self:UnregisterEvent("WindowManagementAdd")
 end
 
 function SpaceStashModule:AddonFullyLoaded(name, args)
