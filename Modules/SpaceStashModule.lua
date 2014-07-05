@@ -50,13 +50,7 @@ function SpaceStashModule:AddonFullyLoaded(name, args)
 		bottom:SetAnchorOffsets(a, b - 28, c, d - 28)
 
 
-		-- If we're set to sort all from a previous choice, then sort it
-		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
-			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)
-			self.spaceStashCore.SSISortChooserButton:SetText("All")
-			self.optionChoice:SetCheck(true)
-		end
-
+		
 		-- handle Bank options
 		prompt = self.spaceStashCore.SSBSortChooserButton:FindChild("ChoiceContainer")
 		a,b,c,d = prompt:GetAnchorOffsets()
@@ -81,31 +75,52 @@ function SpaceStashModule:AddonFullyLoaded(name, args)
 		bottom:SetAnchorOffsets(a, b - 28, c, d - 28)
 
 
+	
+		return	
+	end
+
+	if args.strName == "SpaceStashInventory" then
 		-- If we're set to sort all from a previous choice, then sort it
+		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
+			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)
+			self.spaceStashCore.SSISortChooserButton:SetText("All")
+			self.optionChoice:SetCheck(true)
+		end
+		return 
+	end
+	if args.strName == "SpaceStashBank" then
+			-- If we're set to sort all from a previous choice, then sort it
 		if self.spaceStashCore.db.profile.config.auto.bank.sort == 4 then			
 			self.spaceStashBank:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)
 			self.spaceStashCore.SSBSortChooserButton:SetText("All")
 			self.optionBChoice:SetCheck(true)
 		end
-		return	
+		return
 	end
 end
 
 function SpaceStashModule:OnOptionsSortItemsByAll(wndHandler, wndControl, eMouseButton )
-	if self.spaceStashCore then
-		local list = wndControl:GetParent():GetParent()
-		if list:GetName() == "SSISortChooserButton" then
+	if self.spaceStashCore then		
+		if self.spaceStashCore.SSISortChooserButton:IsVisible() and wndControl then
 			self.spaceStashCore.db.profile.config.auto.inventory.sort = 4
 			self.spaceStashCore.SSISortChooserButton:SetText("All")		
     		self.spaceStashCore.SSISortChooserButton:FindChild("ChoiceContainer"):Show(false,true)
+    	end
+
+    	if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
 			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow",...) end)
     	end
-    	if list:GetName() == "SSBSortChooserButton" then
+    	
+    	if self.spaceStashCore.SSBSortChooserButton:IsVisible() and wndControl then
 			self.spaceStashCore.db.profile.config.auto.bank.sort = 4
 			self.spaceStashCore.SSBSortChooserButton:SetText("All")		
     		self.spaceStashCore.SSBSortChooserButton:FindChild("ChoiceContainer"):Show(false,true)
+    	end
+
+    	if self.spaceStashCore.db.profile.config.auto.bank.sort == 4 then
 			self.spaceStashBank:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow",...) end)
     	end
-		wndControl:SetCheck(true)
+
+		if wndControl then wndControl:SetCheck(true) end
 	end
 end

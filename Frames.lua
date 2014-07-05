@@ -393,7 +393,7 @@ function MrPlow:ReorderTable(list, itemA, itemB)
     -- also resort the stuff in inventory/bank
     for name, mod in self:IterateModules() do
         if type(mod.OnOptionsSortItemsByAll) == "function" then
-            mod:OnOptionsSortItemsByAll()
+           mod:OnOptionsSortItemsByAll()
         end
     end
 end
