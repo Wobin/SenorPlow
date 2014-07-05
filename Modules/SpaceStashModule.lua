@@ -74,26 +74,30 @@ function SpaceStashModule:AddonFullyLoaded(name, args)
 		bottom:SetAnchorPoints(0, 0, 1, 0)
 		bottom:SetAnchorOffsets(a, b - 28, c, d - 28)
 
-
-	
+		-- Now set the button to choose/highlight 'All' if it's been set previously
+		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
+			self.spaceStashCore.SSISortChooserButton:SetText("All")
+			self.optionChoice:SetCheck(true)
+		end
+		if self.spaceStashCore.db.profile.config.auto.bank.sort == 4 then			
+			self.spaceStashCore.SSBSortChooserButton:SetText("All")
+			self.optionBChoice:SetCheck(true)
+		end
 		return	
 	end
 
 	if args.strName == "SpaceStashInventory" then
 		-- If we're set to sort all from a previous choice, then sort it
 		if self.spaceStashCore.db.profile.config.auto.inventory.sort == 4 then
-			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)
-			self.spaceStashCore.SSISortChooserButton:SetText("All")
-			self.optionChoice:SetCheck(true)
+			self.spaceStashInventory:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)		
 		end
 		return 
 	end
+	
 	if args.strName == "SpaceStashBank" then
 			-- If we're set to sort all from a previous choice, then sort it
 		if self.spaceStashCore.db.profile.config.auto.bank.sort == 4 then			
 			self.spaceStashBank:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow", ...) end)
-			self.spaceStashCore.SSBSortChooserButton:SetText("All")
-			self.optionBChoice:SetCheck(true)
 		end
 		return
 	end
