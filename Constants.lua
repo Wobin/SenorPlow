@@ -1,4 +1,4 @@
-local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
+local MrPlow = Apollo.GetAddon("SeñorPlow")
 
 -----------------------------------------------------------------------------------------------
 -- Constants
@@ -155,7 +155,7 @@ local CATEGORY = {
 		WEAPON_STAFF= 20,
 }
 
-CATEGORYDUPES = {	[CATEGORY.QUEST_ACTIVATED] = CATEGORY.QUEST_ITEM,
+local CATEGORYDUPES = {	[CATEGORY.QUEST_ACTIVATED] = CATEGORY.QUEST_ITEM,
 					[CATEGORY.QUEST_ACTIVATED2] = CATEGORY.QUEST_ITEM, 
 					[CATEGORY.QUEST_ITEM2] = CATEGORY.QUEST_ITEM,
 					[CATEGORY.QUEST_CONSUMABLE] = CATEGORY.QUEST_ITEM,

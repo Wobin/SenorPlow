@@ -1,4 +1,4 @@
-local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
+local MrPlow = Apollo.GetAddon("SeñorPlow")
 local GeminiGUI = Apollo.GetPackage("Gemini:GUI-1.0").tPackage
 
 MrPlow.tListFrameDef = {
