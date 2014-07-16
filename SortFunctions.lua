@@ -1,4 +1,4 @@
-local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
+local MrPlow = Apollo.GetAddon("SeñorPlow")
 
 local FAMILY = MrPlow.Lookups.Family.Base 
 local FAMILYDUPES = MrPlow.Lookups.Family.Dupes
