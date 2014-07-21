@@ -1,4 +1,4 @@
-local MrPlow = Apollo.GetAddon("SeñorPlow")
+local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 local CarbineInventoryModule = MrPlow:NewModule("CarbineInventoryModule")
 local Parent, Inventory, Bank
 
