@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Addon Author="Wobin" APIVersion="9" Name="SeñorPlow" Description="Extending the sorting functionality of the inventory">
+<Addon Author="Wobin" APIVersion="11" Name="SeñorPlow" Description="Extending the sorting functionality of the inventory">
 	<Script Name="Libs\LibSort-1.0\LibSort.lua"/>
 	<Script Name="Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
 	<Script Name="Libs\GeminiEvent-1.0\GeminiEvent-1.0.lua"/>
