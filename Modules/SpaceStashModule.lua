@@ -121,7 +121,7 @@ function SpaceStashModule:OnOptionsSortItemsByAll(wndHandler, wndControl, eMouse
     		self.spaceStashCore.SSBSortChooserButton:FindChild("ChoiceContainer"):Show(false,true)
     	end
 
-    	if self.spaceStashCore.db.profile.config.auto.bank.sort == 4 then
+    	if self.spaceStashBank and self.spaceStashCore.db.profile.config.auto.bank.sort == 4 then
 			self.spaceStashBank:SetSortMehtod(function(...) return Parent.LibSort:Comparer("MrPlow",...) end)
     	end
 

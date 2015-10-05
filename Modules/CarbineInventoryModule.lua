@@ -1,23 +1,30 @@
 local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 local CarbineInventoryModule = MrPlow:NewModule("CarbineInventoryModule")
-local Parent, Inventory, Bank
+local Parent, Inventory, Bank, Preload = true
+local HookedFunctions = {"OnOptionsSortItemsName", "OnOptionsSortItemsByCategory", "OnOptionsSortItemsByQuality", "OnOptionsSortItemsOff"}
+
 
 function CarbineInventoryModule:OnEnable()
 	Parent = self.Parent
+	Parent.glog:debug("on enable")
 	if Apollo.GetAddonInfo("Inventory") and Apollo.GetAddonInfo("Inventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("Inventory") end
 	if Apollo.GetAddonInfo("BankViewer") and Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end	
-	if not self.inventory then return self:Disable() end
+	if not self.inventory then Parent.glog:debug("on disable") return self:Disable() end
 	Inventory = self.inventory 	
-	Bank = self.bank
+	Bank = self.bank	
+	-- proceeding with the load if the Carbine Inventory has already been loaded
+	if not Preload then self:WindowManagementAdd("WindowManagementAddAfterLoad", {strName = Apollo.GetString("InterfaceMenu_Inventory")}) end
 end
 
 function CarbineInventoryModule:OnDisable()
 	 self:UnregisterEvent("WindowManagementAdd")
 end
 
-function CarbineInventoryModule:WindowManagementAdd(name, args)
+function CarbineInventoryModule:WindowManagementAdd(name, args)	
+
+	if not Inventory then Preload = false return end -- if the Carbine inventory loads before this module enable and recall it
 	if Inventory and args.strName == Apollo.GetString("InterfaceMenu_Inventory") then 	
-	
+	Parent.glog:debug(args.wnd and args.wnd:GetName())
 		local prompt = Inventory.wndMain:FindChild("ItemSortPrompt")
 		prompt:SetAnchorOffsets(-26, 9, 26, 205)
 			
@@ -31,6 +38,11 @@ function CarbineInventoryModule:WindowManagementAdd(name, args)
 			self.optionChoice:SetCheck(Inventory.bShouldSortItems)
 			Parent:SetSortOnBag(Inventory.wndMainBagWindow)
 		end	
+		for i, name in ipairs(HookedFunctions) do
+			if not self:IsHooked(Inventory, name) then 
+				self:PostHook(Inventory, name, function() Parent:CreateOptionPanel():Show(false) end)
+			end
+		end
 		return
 	end
 

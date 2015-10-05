@@ -22,7 +22,7 @@ local tDependencies = {
 		"Wob:LibSort-1.0", "Gemini:GUI-1.0"
 }	
 
-local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon("MrPlow", bHasConfigureFunction, tDependencies, "Gemini:Hook-1.0")
+MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:NewAddon("MrPlow", bHasConfigureFunction, tDependencies, "Gemini:Hook-1.0")
 
 MrPlow:SetDefaultModulePackages("Gemini:Hook-1.0", "Gemini:Event-1.0")
 MrPlow:SetDefaultModulePrototype({
@@ -37,8 +37,8 @@ MrPlow:SetDefaultModulePrototype({
 function MrPlow:OnInitialize()	
 
 	local GeminiLogging = Apollo.GetPackage("Gemini:Logging-1.2").tPackage
-  	self.glog = GeminiLogging:GetLogger({ level = GeminiLogging.DEBUG, pattern = "%d %n %c %l - %m", appender = "GeminiConsole" })
-  	
+  	self.glog = GeminiLogging:GetLogger({ level = GeminiLogging.INFO, pattern = "%d %n %c %l - %m", appender = "GeminiConsole" })
+	
     -- Set up our modules
 	LibSort = Apollo.GetPackage("Wob:LibSort-1.0").tPackage
 	
@@ -51,8 +51,9 @@ function MrPlow:OnInitialize()
 	self.SpaceStashModule = self:GetModule("SpaceStashModule", true)
 	if self.SpaceStashModule then self.SpaceStashModule:Connect(self) end
 	
-	if not self.VikingInventoryModule:IsActive() then
+	if not self.VikingInventoryModule:IsActive()  then
 	-- Base Carbine Inventory/Bank addons
+		self.glog:debug("loading CIM")
 		self.CarbineInventoryModule = self:GetModule("CarbineInventoryModule", true)
 		if self.CarbineInventoryModule then self.CarbineInventoryModule:Connect(self) end
 	end
@@ -88,7 +89,7 @@ end
 
 function MrPlow:UnsetSortOnBag(bag)
 	bag:SetSort(false)	
-	bag:SetItemSortComparer(nil)	
+	bag:SetItemSortComparer(nil)		
 end
 
 -----------------------------------------------------------------------------------------------
