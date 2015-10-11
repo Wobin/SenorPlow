@@ -47,6 +47,9 @@ function MrPlow:OnInitialize()
 	self.VikingInventoryModule = self:GetModule("VikingInventoryModule", true)
 	if self.VikingInventoryModule then self.VikingInventoryModule:Connect(self) end
 
+	--self.ForgeUIModule = self:GetModule("ForgeUIModule", true)
+	--if self.ForgeUIModule then self.ForgeUIModule:Connect(self) end
+
 	-- SpaceStash
 	self.SpaceStashModule = self:GetModule("SpaceStashModule", true)
 	if self.SpaceStashModule then self.SpaceStashModule:Connect(self) end

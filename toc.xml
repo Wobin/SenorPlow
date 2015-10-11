@@ -13,6 +13,7 @@
     <Script Name="Frames.lua"/>
     <Script Name="SortFunctions.lua"/>
     <Script Name="Modules\CarbineInventoryModule.lua"/>    
+    <Script Name="Modules\ForgeUIModule.lua"/>    
     <Script Name="Modules\VikingInventoryModule.lua"/>    
     <Script Name="Modules\SpaceStashModule.lua"/>
 </Addon>

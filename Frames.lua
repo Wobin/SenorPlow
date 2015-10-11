@@ -73,7 +73,7 @@ MrPlow.tListButtonDef =  {
     }
 }
 
-local tIconBtnSortAllDef = {
+MrPlow.tIconBtnSortAllDef = {
     AnchorOffsets = { 41, 158, -41, 188 },
     AnchorPoints = "HFILL",
     NoClip = true,
@@ -258,7 +258,7 @@ function MrPlow:ShowConfig()
 end
 
 function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide, buttonDefinition, buttonReference)
-    local tButton = GeminiGUI:Create(tIconBtnSortAllDef)
+    local tButton = GeminiGUI:Create(MrPlow.tIconBtnSortAllDef)
     if not buttonReference then buttonReference = self.SortOptionButton end
     tButton:SetOption("RadioGroup", radioGroup)
     tButton:AddEvent("ButtonCheck", function(...) target:OnOptionsSortItemsByAll(...) end)
@@ -267,7 +267,7 @@ function MrPlow:CreateSortOption(radioGroup, parent, target, alongSide, buttonDe
     return buttonReference
 end
 
-function MrPlow:CreateOptionPanel()
+function MrPlow:CreateOptionPanel()    
     if not self.OptionsPanel then         
         self.OptionsPanel = GeminiGUI:Create(MrPlow.tConfigDef):GetInstance(MrPlow, self.alongSide)      
         self.OptionsPanel:Show(false)
