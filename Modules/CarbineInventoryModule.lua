@@ -1,7 +1,7 @@
 local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 local CarbineInventoryModule = MrPlow:NewModule("CarbineInventoryModule")
-local Parent, Inventory, Bank, Preload = true
-local HookedFunctions = {"OnOptionsSortItemsName", "OnOptionsSortItemsByCategory", "OnOptionsSortItemsByQuality", "OnOptionsSortItemsOff"}
+local Parent, Inventory, Bank
+local HookedFunctions = {"OnOptionsSortItemsName", "OnOptionsSortItemsByCategory", "OnOptionsSortItemsByQuality"}
 
 
 function CarbineInventoryModule:OnEnable()
@@ -13,7 +13,7 @@ function CarbineInventoryModule:OnEnable()
 	Inventory = self.inventory 	
 	Bank = self.bank	
 	-- proceeding with the load if the Carbine Inventory has already been loaded
-	if not Preload then self:WindowManagementAdd("WindowManagementAddAfterLoad", {strName = Apollo.GetString("InterfaceMenu_Inventory")}) end
+	if Inventory.wndMain then self:WindowManagementAdd("WindowManagementAddAfterLoad",  {wnd = Inventory.wndMain, strName = Apollo.GetString("InterfaceMenu_Inventory") }) end
 end
 
 function CarbineInventoryModule:OnDisable()
@@ -21,10 +21,13 @@ function CarbineInventoryModule:OnDisable()
 end
 
 function CarbineInventoryModule:WindowManagementAdd(name, args)	
+	if args.strName ~= Apollo.GetString("InterfaceMenu_Inventory") and args.strName ~= Apollo.GetString("Bank_Header") then return end
 
-	if not Inventory then Preload = false return end -- if the Carbine inventory loads before this module enable and recall it
-	if Inventory and args.strName == Apollo.GetString("InterfaceMenu_Inventory") then 	
-	Parent.glog:debug(args.wnd and args.wnd:GetName())
+	if not Parent then return end -- if the Carbine inventory loads before this module enable and recall it
+	
+	if Inventory and args.strName == Apollo.GetString("InterfaceMenu_Inventory") and args.wnd then 	
+	Parent.glog:debug(args)
+	Parent.glog:debug(Inventory)
 		local prompt = Inventory.wndMain:FindChild("ItemSortPrompt")
 		prompt:SetAnchorOffsets(-26, 9, 26, 205)
 			
@@ -47,14 +50,19 @@ function CarbineInventoryModule:WindowManagementAdd(name, args)
 	end
 
 	if Bank and args.strName == Apollo.GetString("Bank_Header") then 
-		
+		Parent.glog:debug("Bank loaded")
+		Parent.glog:debug(args)
 		Bank.bagWindow = Bank.wndMain:FindChild("MainBagWindow")	
 		-- Hook into the sort function to reflect it into the bank
 		if not self:IsHooked(Inventory, "OnOptionsSortItemsOff") then
-			self:PostHook(Inventory, "OnOptionsSortItemsOff", function() Parent:UnsetSortOnBag(Bank.bagWindow) end)
+			self:PostHook(Inventory, "OnOptionsSortItemsOff", function() 		
+				Parent:CreateOptionPanel():Show(false) 		
+				Parent:UnsetSortOnBag(Bank.bagWindow) 
+				end)
 		end
 		
-		if self:ShouldSort() then		
+		if self:ShouldSort() then	
+			Parent.glog:debug("sorting bank")	
 			Parent:SetSortOnBag(Bank.bagWindow)
 		end
 	end

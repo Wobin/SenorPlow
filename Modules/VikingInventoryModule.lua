@@ -1,28 +1,29 @@
 local MrPlow = Apollo.GetPackage("Gemini:Addon-1.1").tPackage:GetAddon("MrPlow")
 local VikingInventoryModule = MrPlow:NewModule("VikingInventoryModule")
-local Parent, Inventory, Bank
+ Parent, Inventory, Bank, Preload = false
 
 local tPixie = 	{ loc = { nOffsets = { 0, -144, 0, 0 }, fPoints = { 0, 1, 1, 1 }}, strSprite = "BK3:UI_BK3_Holo_InsetFlyout", cr = "white", crText = "black", }
 									
-
-
-
 function VikingInventoryModule:IsActive()
 	return Inventory ~= nil
 end
 
-function VikingInventoryModule:OnEnable()
+function VikingInventoryModule:OnEnable()    
 	Parent = self.Parent
+    Parent.glog:debug("VikingInventory enabled")
 	if Apollo.GetAddonInfo("VikingInventory") and Apollo.GetAddonInfo("VikingInventory").bRunning ~= 0 then self.inventory = Apollo.GetAddon("VikingInventory") end	
     
     if Apollo.GetAddonInfo("BankViewer") and Apollo.GetAddonInfo("BankViewer").bRunning ~= 0 then self.bank = Apollo.GetAddon("BankViewer")  end    
 
-    if not self.inventory then return self:Disable() end
+    if not self.inventory then Parent.glog:debug("VikingInventory disabled") return self:Disable() end
 
 	Inventory = self.inventory 	
     Bank = self.bank
 
 	if self:IsActive() then self:RestyleConfig() end
+
+    -- proceeding with the load if the Carbine Inventory has already been loaded    
+    if Inventory.wndMain then self:WindowManagementAdd("WindowManagementAddAfterLoad",  {wnd = Inventory.wndMain, strName = Apollo.GetString("InterfaceMenu_Inventory") }) end
 end
 
 function VikingInventoryModule:OnDisable()
@@ -224,7 +225,11 @@ Parent.overButton = "CRB_PlayerPathSprites:btnPP_HologramBase"
 Parent.outButton = "BK3:btnHolo_ListView_Simple"
 end
 
-function VikingInventoryModule:WindowManagementAdd(name, args)
+function VikingInventoryModule:WindowManagementAdd(name, args)    
+    if args.strName ~= Apollo.GetString("InterfaceMenu_Inventory") and args.strName ~= Apollo.GetString("Bank_Header") then return end
+
+    if not Parent then return end -- if the Carbine inventory loads before this module enable and recall it
+
 	if Inventory and args.strName == Apollo.GetString("InterfaceMenu_Inventory") then 	
 	
 		local prompt = Inventory.wndMain:FindChild("ItemSortPrompt")	
